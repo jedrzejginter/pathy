@@ -1,4 +1,4 @@
-module.exports.regex = {
+export const regex = {
   sequenceOfSlashes: /\/{2,}/g,
   trailingSlash: /\/\s*$/,
   paramDelimiters: /(\{|\})/g,

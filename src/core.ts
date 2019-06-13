@@ -1,57 +1,57 @@
 const { regex } = require("./constants.js");
 const { assertType } = require("./utils.js");
 
-module.exports.normalizeUrl = function(url) {
+export function normalizeUrl(url: string) {
   assertType(url, "url", "string");
 
   return url
     .replace(regex.sequenceOfSlashes, "/")
     .replace(regex.trailingSlash, "");
-};
+}
 
-module.exports.replaceForParam = function(arg) {
+function replaceForParam(arg: string) {
   assertType(arg, "arg", "string");
 
   return arg.replace(regex.paramDefinition, ":$1");
-};
+}
 
-module.exports.replaceForString = function(arg) {
+function replaceForString(arg: string) {
   assertType(arg, "arg", "string");
 
   return arg.replace(regex.stringAnnotation, regex.string.source);
-};
+}
 
-module.exports.replaceForInt = function(arg) {
+function replaceForInt(arg: string) {
   assertType(arg, "arg", "string");
 
   return arg.replace(regex.intAnnotation, regex.int.source);
-};
+}
 
-module.exports.replaceForUnsignedInt = function(arg) {
+function replaceForUnsignedInt(arg: string) {
   assertType(arg, "arg", "string");
 
   return arg.replace(regex.uintAnnotation, regex.uint.source);
-};
+}
 
-module.exports.replaceForFloat = function(arg) {
+function replaceForFloat(arg: string) {
   assertType(arg, "arg", "string");
 
   return arg.replace(regex.floatAnnotation, regex.float.source);
-};
+}
 
-module.exports.replaceForUuid = function(arg) {
+function replaceForUuid(arg: string) {
   assertType(arg, "arg", "string");
 
   return arg.replace(regex.uuidAnnotation, regex.uuid.source);
-};
+}
 
-function stripAnnotations(arg) {
+function stripAnnotations(arg: string) {
   assertType(arg, "arg", "string");
 
   return arg.replace(regex.annotation, "").replace(regex.paramDelimiters, ":");
 }
 
-module.exports.applyParams = function(arg, params = {}) {
+export function applyParams(arg: string, params: object = {}) {
   assertType(arg, "arg", "string");
   assertType(params, "params", "object");
 
@@ -65,9 +65,9 @@ module.exports.applyParams = function(arg, params = {}) {
   });
 
   return out;
-};
+}
 
-module.exports.createRoute = function(arg) {
+export function createRoute(arg: string) {
   assertType(arg, "arg", "string");
 
   let out = normalizeUrl(arg);
@@ -87,4 +87,4 @@ module.exports.createRoute = function(arg) {
   out = replaceForUuid(out);
 
   return out;
-};
+}
