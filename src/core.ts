@@ -1,5 +1,5 @@
-const { regex } = require("./constants.js");
-const { assertType } = require("./utils.js");
+import { regex } from "./constants";
+import { assertType } from "./utils";
 
 export function normalizeUrl(url: string) {
   assertType(url, "url", "string");
