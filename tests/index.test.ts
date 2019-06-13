@@ -1,4 +1,4 @@
-const { applyParams, normalizeUrl } = require("../lib");
+import { applyParams, normalizeUrl } from "../src/core";
 
 describe("normalizeUrl", () => {
   it("should return input when nothing to do", () => {
