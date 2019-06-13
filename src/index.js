@@ -45,18 +45,19 @@ module.exports.replaceForUuid = function(arg) {
   return arg.replace(regex.uuidAnnotation, regex.uuid.source);
 };
 
-module.exports.stripAnnotations = function(arg) {
+function stripAnnotations(arg) {
   assertType(arg, "arg", "string");
 
   return arg.replace(regex.annotation, "").replace(regex.paramDelimiters, ":");
-};
+}
 
 module.exports.applyParams = function(arg, params = {}) {
   assertType(arg, "arg", "string");
   assertType(params, "params", "object");
 
   const paramNames = Object.keys(params);
-  let out = arg;
+
+  let out = stripAnnotations(arg);
 
   paramNames.forEach(function(paramName) {
     const valueAsString = String(params[paramName]);

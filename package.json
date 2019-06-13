@@ -4,5 +4,14 @@
   "main": "index.js",
   "repository": "git@github.com:jedrzejginter/simple-path.git",
   "author": "Jedrzej Ginter <dzeejj@gmail.com> (https://github.com/jedrzejginter)",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.13.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "24.8.0"
+  }
 }
