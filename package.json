@@ -1,0 +1,8 @@
+{
+  "name": "simple-path",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:jedrzejginter/simple-path.git",
+  "author": "Jedrzej Ginter <dzeejj@gmail.com> (https://github.com/jedrzejginter)",
+  "license": "MIT"
+}
