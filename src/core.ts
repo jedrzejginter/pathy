@@ -67,7 +67,7 @@ export function applyParams(arg: string, params: object = {}) {
   return out;
 }
 
-export function createRoute(arg: string) {
+export function createRoutePath(arg: string) {
   assertType(arg, "arg", "string");
 
   let out = normalizeUrl(arg);
