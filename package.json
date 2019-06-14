@@ -1,9 +1,9 @@
 {
-  "name": "simple-path",
+  "name": "pathy",
   "version": "0.1.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
-  "repository": "git@github.com:jedrzejginter/simple-path.git",
+  "repository": "git@github.com:jedrzejginter/pathy.git",
   "author": "Jedrzej Ginter <dzeejj@gmail.com> (https://github.com/jedrzejginter)",
   "license": "MIT",
   "engines": {

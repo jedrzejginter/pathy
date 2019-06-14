@@ -1,4 +1,4 @@
-# simple-path
+# Pathy
 
 A small library that will help you with writing paths with dynamic parameters validation.\
 And I hope you will love how easy it is 😍.
@@ -17,7 +17,7 @@ To define a dynamic parameter in your URL, like post ID for single post view, us
 ## Example
 
 ```ts
-import { applyUrlParams, createRoutePath } from "simple-path";
+import { applyUrlParams, createRoutePath } from "pathy";
 
 const url = applyUrlParams("/posts/{postId:int}/edit", { postId: 123 });
 // url: "/posts/123/edit"
