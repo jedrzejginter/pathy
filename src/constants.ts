@@ -2,9 +2,11 @@ export const regex = {
   annotation: /\:[^\}]+\}/g,
   paramDefinitionOpening: /\{/g,
   leadingSlashesReplace: /^\/{2,}/,
-  slashesReplace: /([^\:])\/{2,}/g,
+  leadingSpacesReplace: /^\s+/,
+  trailingSpacesReplace: /\s+$/,
+  multiSlashesReplace: /([^\:])\/{2,}/g,
   protocolSlashesReplace: /\:\/{3,}/,
-  trailingSlash: /\/\s*$/,
+  trailingSlashesReplace: /\/\s*$/,
   /** */
   bool: /(true|false)/,
   float: /(0|-?[1-9]\d{0,128}|-?0\.\d{0,128}[1-9]\d{0,128}|-?[1-9]\d{0,128}\.\d{1,128})/,

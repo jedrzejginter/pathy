@@ -19,6 +19,14 @@ describe("normalizeUrl", () => {
     expect(normalizeUrl("/abc/")).toBe("/abc");
   });
 
+  it("should remove leading white spaces", () => {
+    expect(normalizeUrl("  /abc/def")).toBe("/abc/def");
+  });
+
+  it("should remove trailing white spaces", () => {
+    expect(normalizeUrl("/abc/def  ")).toBe("/abc/def");
+  });
+
   it("should replace multiple leading slashes into one", () => {
     expect(normalizeUrl("//abc")).toBe("/abc");
   });

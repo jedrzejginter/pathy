@@ -6,9 +6,11 @@ export function normalizeUrl(url: string) {
 
   return url
     .replace(regex.protocolSlashesReplace, "://")
-    .replace(regex.slashesReplace, "$1/")
+    .replace(regex.multiSlashesReplace, "$1/")
     .replace(regex.leadingSlashesReplace, "/")
-    .replace(regex.trailingSlash, "");
+    .replace(regex.trailingSlashesReplace, "")
+    .replace(regex.leadingSpacesReplace, "")
+    .replace(regex.trailingSpacesReplace, "");
 }
 
 function replaceAnnotation(path: string, match: RegExp, replace: RegExp) {
