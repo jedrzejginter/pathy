@@ -17,6 +17,18 @@ describe("normalizeUrl", () => {
   it("should remove multiple trailing slashes", () => {
     expect(normalizeUrl("/abc/def//")).toBe("/abc/def");
   });
+
+  it("should leave double slashes for protocol", () => {
+    expect(normalizeUrl("http://abc.com")).toBe("http://abc.com");
+    expect(normalizeUrl("https://abc.com")).toBe("https://abc.com");
+    expect(normalizeUrl("file://abc.txt")).toBe("file://abc.txt");
+    expect(normalizeUrl("ws://abc.com")).toBe("ws://abc.com");
+  });
+
+  it("should normalize slashes for protocol if sequence longer than 2", () => {
+    expect(normalizeUrl("http:///abc.com/def")).toBe("http://abc.com/def");
+    expect(normalizeUrl("ws://////abc.com")).toBe("ws://abc.com");
+  });
 });
 
 describe("applyParams", () => {

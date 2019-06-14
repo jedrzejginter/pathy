@@ -5,7 +5,8 @@ export function normalizeUrl(url: string) {
   assertType(url, "url", "string");
 
   return url
-    .replace(regex.sequenceOfSlashes, "/")
+    .replace(regex.protocolSlashesReplace, "://")
+    .replace(regex.slashesReplace, "$1/")
     .replace(regex.trailingSlash, "");
 }
 
