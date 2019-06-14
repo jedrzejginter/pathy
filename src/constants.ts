@@ -22,3 +22,12 @@ export const regex = {
   uintAnnotation: /\{([\d\_a-z]{1,128})\:uint\}/g,
   uuidAnnotation: /\{([\d\_a-z]{1,128})\:uuid\}/g
 };
+
+export const coreAnnotations = {
+  bool: /(true|false)/,
+  float: /(0|-?[1-9]\d{0,128}|-?0\.\d{0,128}[1-9]\d{0,128}|-?[1-9]\d{0,128}\.\d{1,128})/,
+  int: /(0|-?[1-9]\d{0,128})/,
+  str: /([^\/]+)/,
+  uint: /(0|[1-9]\d{0,128})/,
+  uuid: /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/
+};
