@@ -1,4 +1,9 @@
-import { applyParams, normalizeUrl } from "../src/core";
+import {
+  applyParams,
+  normalizeUrl,
+  replaceForBool,
+  replaceForString
+} from "../src/core";
 
 describe("normalizeUrl", () => {
   it("should return input when nothing to do", () => {
@@ -28,6 +33,18 @@ describe("normalizeUrl", () => {
   it("should normalize slashes for protocol if sequence longer than 2", () => {
     expect(normalizeUrl("http:///abc.com/def")).toBe("http://abc.com/def");
     expect(normalizeUrl("ws://////abc.com")).toBe("ws://abc.com");
+  });
+});
+
+describe("replaceForString", () => {
+  it("should replace string parameter annotation", () => {
+    expect(replaceForString("/abc/{arg0:str}")).toBe("/abc/:arg0([^\\/]+)");
+  });
+});
+
+describe("replaceForBool", () => {
+  it("should replace boolean parameter annotation", () => {
+    expect(replaceForBool("/abc/{arg0:bool}")).toBe("/abc/:arg0(true|false)");
   });
 });
 
@@ -67,7 +84,7 @@ describe("applyParams", () => {
   });
 
   it("should apply multiple bool parameters", () => {
-    const url = "/abc/{arg0:bool}/def/{arg1:boolean}";
+    const url = "/abc/{arg0:bool}/def/{arg1:bool}";
 
     expect(applyParams(url, { arg0: true, arg1: false })).toBe(
       "/abc/true/def/false"

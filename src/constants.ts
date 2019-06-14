@@ -1,6 +1,6 @@
 export const regex = {
-  annotation: /\:[^\}]*\}/g,
-  paramDelimiters: /(\{|\})/g,
+  annotation: /\:[^\}]+\}/g,
+  paramDefinitionOpening: /\{/g,
   slashesReplace: /([^\:])\/{2,}/g,
   protocolSlashesReplace: /\:\/{3,}/,
   trailingSlash: /\/\s*$/,
@@ -8,16 +8,14 @@ export const regex = {
   bool: /(true|false)/,
   float: /(0|-?[1-9]\d{0,128}|-?0\.\d{0,128}[1-9]\d{0,128}|-?[1-9]\d{0,128}\.\d{1,128})/,
   int: /(0|-?[1-9]\d{0,128})/,
-  string: /([^\/]+)/,
+  str: /([^\/]+)/,
   uint: /(0|[1-9]\d{0,128})/,
   uuid: /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/i,
   /** */
-  paramDefinition: /\{([_a-z\d]{1,128})/gi,
-  /** */
-  boolAnnotation: /\:(bool|boolean)\}/g,
-  floatAnnotation: /\:float\}/g,
-  intAnnotation: /\:int\}/g,
-  stringAnnotation: /\:(str|string)\}/g,
-  uintAnnotation: /\:uint\}/g,
-  uuidAnnotation: /\:(id|uuid)\}/g
+  boolAnnotation: /\{([\d\_a-z]{1,128})\:bool\}/g,
+  floatAnnotation: /\{([\d\_a-z]{1,128})\:float\}/g,
+  intAnnotation: /\{([\d\_a-z]{1,128})\:int\}/g,
+  strAnnotation: /\{([\d\_a-z]{1,128})\:str\}/g,
+  uintAnnotation: /\{([\d\_a-z]{1,128})\:uint\}/g,
+  uuidAnnotation: /\{([\d\_a-z]{1,128})\:uuid\}/g
 };

@@ -10,52 +10,48 @@ export function normalizeUrl(url: string) {
     .replace(regex.trailingSlash, "");
 }
 
-function replaceForParam(arg: string) {
+export function replaceForString(arg: string) {
   assertType(arg, "arg", "string");
 
-  return arg.replace(regex.paramDefinition, ":$1");
+  return arg.replace(regex.strAnnotation, `:$1${regex.str.source}`);
 }
 
-function replaceForString(arg: string) {
+export function replaceForInt(arg: string) {
   assertType(arg, "arg", "string");
 
-  return arg.replace(regex.stringAnnotation, regex.string.source);
+  return arg.replace(regex.intAnnotation, `:$1${regex.int.source}`);
 }
 
-function replaceForInt(arg: string) {
+export function replaceForUnsignedInt(arg: string) {
   assertType(arg, "arg", "string");
 
-  return arg.replace(regex.intAnnotation, regex.int.source);
+  return arg.replace(regex.uintAnnotation, `:$1${regex.uint.source}`);
 }
 
-function replaceForUnsignedInt(arg: string) {
+export function replaceForFloat(arg: string) {
   assertType(arg, "arg", "string");
 
-  return arg.replace(regex.uintAnnotation, regex.uint.source);
+  return arg.replace(regex.floatAnnotation, `:$1${regex.float.source}`);
 }
 
-function replaceForFloat(arg: string) {
+export function replaceForBool(arg: string) {
   assertType(arg, "arg", "string");
 
-  return arg.replace(regex.floatAnnotation, regex.float.source);
+  return arg.replace(regex.boolAnnotation, `:$1${regex.bool.source}`);
 }
 
-function replaceForBool(arg: string) {
+export function replaceForUuid(arg: string) {
   assertType(arg, "arg", "string");
 
-  return arg.replace(regex.boolAnnotation, regex.bool.source);
+  return arg.replace(regex.uuidAnnotation, `:$1${regex.uuid.source}`);
 }
 
-function replaceForUuid(arg: string) {
+export function stripAnnotations(arg: string) {
   assertType(arg, "arg", "string");
 
-  return arg.replace(regex.uuidAnnotation, regex.uuid.source);
-}
-
-function stripAnnotations(arg: string) {
-  assertType(arg, "arg", "string");
-
-  return arg.replace(regex.annotation, "").replace(regex.paramDelimiters, ":");
+  return arg
+    .replace(regex.annotation, "")
+    .replace(regex.paramDefinitionOpening, ":");
 }
 
 export function applyParams(arg: string, params: object) {
@@ -66,7 +62,7 @@ export function applyParams(arg: string, params: object) {
 
   let out = stripAnnotations(arg);
 
-  paramNames.forEach(function(paramName) {
+  paramNames.forEach(paramName => {
     const valueAsString = String(params[paramName]);
     out = out.replace(":" + paramName, valueAsString);
   });
@@ -80,19 +76,24 @@ export function createRoutePath(arg: string) {
   let out = normalizeUrl(arg);
 
   /**
-   * We don't have any params to replace, so exit immediatelly.
+   * We HAVE TO create a new RegExp instance every time, because we are using global flag
+   * and it keeps tracks of 'lastIndex' property which results in different behaviour
+   * ('test' method returns false even is should return true).
+   * For more see the accepted answer on Stack Overflow.
+   * @see https://bit.ly/2wSg1Po
    */
-  if (!regex.paramDelimiters.test(out)) {
+  const re = new RegExp(regex.paramDefinitionOpening);
+
+  if (!re.test(out)) {
     return out;
   }
 
-  out = replaceForParam(out);
-  out = replaceForString(out);
+  out = replaceForBool(out);
+  out = replaceForFloat(out);
   out = replaceForInt(out);
   out = replaceForUnsignedInt(out);
-  out = replaceForFloat(out);
+  out = replaceForString(out);
   out = replaceForUuid(out);
-  out = replaceForBool(out);
 
   return out;
 }
