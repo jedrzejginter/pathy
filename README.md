@@ -17,12 +17,12 @@ To define a dynamic parameter in your URL, like post ID for single post view, us
 ## Example
 
 ```ts
-import { applyUrlParams, createRoutePath } from "pathy";
+import { applyParams, createRoute } from "pathy";
 
-const url = applyUrlParams("/posts/{postId:int}/edit", { postId: 123 });
+const url = applyParams("/posts/{postId:int}/edit", { postId: 123 });
 // url: "/posts/123/edit"
 
-const route = createRoutePath("/posts/{postId:int}");
+const route = createRoute("/posts/{postId:int}");
 // Creates path-to-regexp compatible paths, so you can use them with React Router.
 // route: "/posts/:postId((0|-?[1-9]\\d{0,128}))"
 ```
