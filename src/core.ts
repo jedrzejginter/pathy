@@ -91,8 +91,8 @@ export function createRoutePath(arg: string) {
   out = replaceForBool(out);
   out = replaceForFloat(out);
   out = replaceForInt(out);
-  out = replaceForUnsignedInt(out);
   out = replaceForString(out);
+  out = replaceForUnsignedInt(out);
   out = replaceForUuid(out);
 
   return out;
