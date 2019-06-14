@@ -1,10 +1,10 @@
 import { regex } from "./constants";
 import { assertType } from "./utils";
 
-export function normalizeUrl(url: string) {
-  assertType(url, "url", "string");
+export function normalizePath(path: string) {
+  assertType(path, "path", "string");
 
-  return url
+  return path
     .replace(regex.protocolSlashesReplace, "://")
     .replace(regex.multiSlashesReplace, "$1/")
     .replace(regex.leadingSlashesReplace, "/")
@@ -13,9 +13,21 @@ export function normalizeUrl(url: string) {
     .replace(regex.trailingSpacesReplace, "");
 }
 
-function replaceAnnotation(path: string, match: RegExp, replace: RegExp) {
+export function replaceAnnotation(
+  path: string,
+  match: RegExp,
+  replace: RegExp
+) {
   assertType(path, "path", "string");
   return path.replace(match, `:$1${replace.source}`);
+}
+
+export function stripAnnotations(path: string) {
+  assertType(path, "path", "string");
+
+  return path
+    .replace(regex.annotation, "")
+    .replace(regex.paramDefinitionOpening, ":");
 }
 
 export function replaceForString(path: string) {
@@ -42,26 +54,16 @@ export function replaceForUuid(path: string) {
   return replaceAnnotation(path, regex.uuidAnnotation, regex.uuid);
 }
 
-export function stripAnnotations(arg: string) {
-  assertType(arg, "arg", "string");
-
-  return arg
-    .replace(regex.annotation, "")
-    .replace(regex.paramDefinitionOpening, ":");
-}
-
 export function applyParams(path: string, params: object) {
   assertType(path, "arg", "string");
   assertType(params, "params", "object");
 
   const paramNames = Object.keys(params);
-
   let out = stripAnnotations(path);
 
-  paramNames.forEach(paramName => {
-    const valueAsString = String(params[paramName]);
-    out = out.replace(":" + paramName, valueAsString);
-  });
+  for (const paramName of paramNames) {
+    out = out.replace(`:${paramName}`, JSON.stringify(params[paramName]));
+  }
 
   return out;
 }
@@ -69,7 +71,7 @@ export function applyParams(path: string, params: object) {
 export function createRoutePath(path: string) {
   assertType(path, "path", "string");
 
-  let out = normalizeUrl(path);
+  let out = normalizePath(path);
 
   /**
    * We HAVE TO create a new RegExp instance every time, because we are using global flag

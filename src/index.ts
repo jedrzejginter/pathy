@@ -1,1 +1,1 @@
-export { applyParams, createRoutePath, normalizeUrl } from "./core";
+export { applyParams, createRoutePath, normalizePath } from "./core";

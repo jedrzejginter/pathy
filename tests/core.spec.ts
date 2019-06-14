@@ -1,50 +1,50 @@
 import {
   applyParams,
-  normalizeUrl,
+  normalizePath,
   replaceForBool,
   replaceForString
 } from "../src/core";
 
-describe("normalizeUrl", () => {
+describe("normalizePath", () => {
   it("should return input when nothing to do", () => {
-    expect(normalizeUrl("/abc/def")).toBe("/abc/def");
+    expect(normalizePath("/abc/def")).toBe("/abc/def");
   });
 
   it("should replace multiple slashed with one", () => {
-    expect(normalizeUrl("/abc//def")).toBe("/abc/def");
-    expect(normalizeUrl("/abc//def//ghi")).toBe("/abc/def/ghi");
+    expect(normalizePath("/abc//def")).toBe("/abc/def");
+    expect(normalizePath("/abc//def//ghi")).toBe("/abc/def/ghi");
   });
 
   it("should remove trailing slash", () => {
-    expect(normalizeUrl("/abc/")).toBe("/abc");
+    expect(normalizePath("/abc/")).toBe("/abc");
   });
 
   it("should remove leading white spaces", () => {
-    expect(normalizeUrl("  /abc/def")).toBe("/abc/def");
+    expect(normalizePath("  /abc/def")).toBe("/abc/def");
   });
 
   it("should remove trailing white spaces", () => {
-    expect(normalizeUrl("/abc/def  ")).toBe("/abc/def");
+    expect(normalizePath("/abc/def  ")).toBe("/abc/def");
   });
 
   it("should replace multiple leading slashes into one", () => {
-    expect(normalizeUrl("//abc")).toBe("/abc");
+    expect(normalizePath("//abc")).toBe("/abc");
   });
 
   it("should remove multiple trailing slashes", () => {
-    expect(normalizeUrl("/abc/def//")).toBe("/abc/def");
+    expect(normalizePath("/abc/def//")).toBe("/abc/def");
   });
 
   it("should leave double slashes for protocol", () => {
-    expect(normalizeUrl("http://abc.com")).toBe("http://abc.com");
-    expect(normalizeUrl("https://abc.com")).toBe("https://abc.com");
-    expect(normalizeUrl("file://abc.txt")).toBe("file://abc.txt");
-    expect(normalizeUrl("ws://abc.com")).toBe("ws://abc.com");
+    expect(normalizePath("http://abc.com")).toBe("http://abc.com");
+    expect(normalizePath("https://abc.com")).toBe("https://abc.com");
+    expect(normalizePath("file://abc.txt")).toBe("file://abc.txt");
+    expect(normalizePath("ws://abc.com")).toBe("ws://abc.com");
   });
 
   it("should normalize slashes for protocol if sequence longer than 2", () => {
-    expect(normalizeUrl("http:///abc.com/def")).toBe("http://abc.com/def");
-    expect(normalizeUrl("ws://////abc.com")).toBe("ws://abc.com");
+    expect(normalizePath("http:///abc.com/def")).toBe("http://abc.com/def");
+    expect(normalizePath("ws://////abc.com")).toBe("ws://abc.com");
   });
 });
 
