@@ -80,7 +80,7 @@ export function createRoutePath(arg: string) {
    * and it keeps tracks of 'lastIndex' property which results in different behaviour
    * ('test' method returns false even is should return true).
    * For more see the accepted answer on Stack Overflow.
-   * @see https://bit.ly/2wSg1Po
+   * @see https://stackoverflow.com/a/6891667
    */
   const re = new RegExp(regex.paramDefinitionOpening);
 
