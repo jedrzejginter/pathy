@@ -10,40 +10,34 @@ export function normalizeUrl(url: string) {
     .replace(regex.trailingSlash, "");
 }
 
-export function replaceForString(arg: string) {
-  assertType(arg, "arg", "string");
+function replaceAnnotation(path: string, match: RegExp, replace: RegExp) {
+  assertType(path, "path", "string");
 
-  return arg.replace(regex.strAnnotation, `:$1${regex.str.source}`);
+  return path.replace(match, `:$1${replace.source}`);
 }
 
-export function replaceForInt(arg: string) {
-  assertType(arg, "arg", "string");
-
-  return arg.replace(regex.intAnnotation, `:$1${regex.int.source}`);
+export function replaceForString(path: string) {
+  return replaceAnnotation(path, regex.strAnnotation, regex.str);
 }
 
-export function replaceForUnsignedInt(arg: string) {
-  assertType(arg, "arg", "string");
-
-  return arg.replace(regex.uintAnnotation, `:$1${regex.uint.source}`);
+export function replaceForInt(path: string) {
+  return replaceAnnotation(path, regex.intAnnotation, regex.int);
 }
 
-export function replaceForFloat(arg: string) {
-  assertType(arg, "arg", "string");
-
-  return arg.replace(regex.floatAnnotation, `:$1${regex.float.source}`);
+export function replaceForUnsignedInt(path: string) {
+  return replaceAnnotation(path, regex.uintAnnotation, regex.uint);
 }
 
-export function replaceForBool(arg: string) {
-  assertType(arg, "arg", "string");
-
-  return arg.replace(regex.boolAnnotation, `:$1${regex.bool.source}`);
+export function replaceForFloat(path: string) {
+  return replaceAnnotation(path, regex.floatAnnotation, regex.float);
 }
 
-export function replaceForUuid(arg: string) {
-  assertType(arg, "arg", "string");
+export function replaceForBool(path: string) {
+  return replaceAnnotation(path, regex.boolAnnotation, regex.bool);
+}
 
-  return arg.replace(regex.uuidAnnotation, `:$1${regex.uuid.source}`);
+export function replaceForUuid(path: string) {
+  return replaceAnnotation(path, regex.uuidAnnotation, regex.uuid);
 }
 
 export function stripAnnotations(arg: string) {
