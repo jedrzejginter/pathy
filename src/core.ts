@@ -7,12 +7,12 @@ export function normalizeUrl(url: string) {
   return url
     .replace(regex.protocolSlashesReplace, "://")
     .replace(regex.slashesReplace, "$1/")
+    .replace(regex.leadingSlashesReplace, "/")
     .replace(regex.trailingSlash, "");
 }
 
 function replaceAnnotation(path: string, match: RegExp, replace: RegExp) {
   assertType(path, "path", "string");
-
   return path.replace(match, `:$1${replace.source}`);
 }
 
@@ -48,13 +48,13 @@ export function stripAnnotations(arg: string) {
     .replace(regex.paramDefinitionOpening, ":");
 }
 
-export function applyParams(arg: string, params: object) {
-  assertType(arg, "arg", "string");
+export function applyParams(path: string, params: object) {
+  assertType(path, "arg", "string");
   assertType(params, "params", "object");
 
   const paramNames = Object.keys(params);
 
-  let out = stripAnnotations(arg);
+  let out = stripAnnotations(path);
 
   paramNames.forEach(paramName => {
     const valueAsString = String(params[paramName]);
@@ -64,10 +64,10 @@ export function applyParams(arg: string, params: object) {
   return out;
 }
 
-export function createRoutePath(arg: string) {
-  assertType(arg, "arg", "string");
+export function createRoutePath(path: string) {
+  assertType(path, "path", "string");
 
-  let out = normalizeUrl(arg);
+  let out = normalizeUrl(path);
 
   /**
    * We HAVE TO create a new RegExp instance every time, because we are using global flag

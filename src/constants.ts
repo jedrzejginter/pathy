@@ -1,6 +1,7 @@
 export const regex = {
   annotation: /\:[^\}]+\}/g,
   paramDefinitionOpening: /\{/g,
+  leadingSlashesReplace: /^\/{2,}/,
   slashesReplace: /([^\:])\/{2,}/g,
   protocolSlashesReplace: /\:\/{3,}/,
   trailingSlash: /\/\s*$/,

@@ -19,6 +19,10 @@ describe("normalizeUrl", () => {
     expect(normalizeUrl("/abc/")).toBe("/abc");
   });
 
+  it("should replace multiple leading slashes into one", () => {
+    expect(normalizeUrl("//abc")).toBe("/abc");
+  });
+
   it("should remove multiple trailing slashes", () => {
     expect(normalizeUrl("/abc/def//")).toBe("/abc/def");
   });
