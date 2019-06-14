@@ -26,10 +26,17 @@ To define a dynamic parameter in your URL, like post ID for single post view, us
 ```ts
 import { applyParams, createRoute } from "pathy";
 
+/**
+ * Replace dynamic parameters definitions with actual data passed as second parameter.
+ * Here, 'url' will be '/posts/123/edit'.
+ */
 const url = applyParams("/posts/{postId:int}/edit", { postId: 123 });
-// url: "/posts/123/edit"
 
+/**
+ * Create a route that is compatible with another great package, 'path-to-regexp',
+ * which is used for example React Router.
+ * Here `{postId:int}` will be replace with named parameter and regular expression
+ * to allow only path started with '/posts/' and followed by integer.
+ */
 const route = createRoute("/posts/{postId:int}");
-// Creates path-to-regexp compatible paths, so you can use them with React Router.
-// route: "/posts/:postId((0|-?[1-9]\\d{0,128}))"
 ```
