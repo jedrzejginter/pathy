@@ -1,6 +1,7 @@
 # simple-path
 
-A small library for writing your app URL's with joyful validation.
+A small library that will help you with writing paths with dynamic parameters validation.
+And I hope you will love how easy it is 😍.
 
 ### Syntax
 
@@ -10,8 +11,8 @@ To define a dynamic parameter in your URL, like post ID for single post view, us
 {name:type}
 ```
 
-- `name` is just the name of your parameter and it has to be unique across whole url
-- `type` is one of: `int`, `uint` (positive integer), `float`, `str` (alias: `string`), `uuid`.
+- `name` is just the name of your parameter and it has to be unique across the url
+- `type` is one of: `bool`, (alias: `boolean`), `int`, `uint` (positive integer), `float`, `str` (alias: `string`), `uuid`.
 
 ### Example
 

@@ -47,4 +47,18 @@ describe("applyParams", () => {
     expect(applyParams(url, { arg0: -0.123 })).toBe("/abc/-0.123");
     expect(applyParams(url, { arg0: -456.0 })).toBe("/abc/-456");
   });
+
+  it("should apply single bool parameter", () => {
+    const url = "/abc/{arg0:bool}";
+
+    expect(applyParams(url, { arg0: true })).toBe("/abc/true");
+  });
+
+  it("should apply multiple bool parameters", () => {
+    const url = "/abc/{arg0:bool}/def/{arg1:boolean}";
+
+    expect(applyParams(url, { arg0: true, arg1: false })).toBe(
+      "/abc/true/def/false"
+    );
+  });
 });

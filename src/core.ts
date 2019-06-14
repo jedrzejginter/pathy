@@ -39,6 +39,12 @@ function replaceForFloat(arg: string) {
   return arg.replace(regex.floatAnnotation, regex.float.source);
 }
 
+function replaceForBool(arg: string) {
+  assertType(arg, "arg", "string");
+
+  return arg.replace(regex.boolAnnotation, regex.bool.source);
+}
+
 function replaceForUuid(arg: string) {
   assertType(arg, "arg", "string");
 
@@ -51,7 +57,7 @@ function stripAnnotations(arg: string) {
   return arg.replace(regex.annotation, "").replace(regex.paramDelimiters, ":");
 }
 
-export function applyParams(arg: string, params: object = {}) {
+export function applyParams(arg: string, params: object) {
   assertType(arg, "arg", "string");
   assertType(params, "params", "object");
 
@@ -85,6 +91,7 @@ export function createRoutePath(arg: string) {
   out = replaceForUnsignedInt(out);
   out = replaceForFloat(out);
   out = replaceForUuid(out);
+  out = replaceForBool(out);
 
   return out;
 }
