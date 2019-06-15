@@ -1,5 +1,8 @@
 # Pathy
 
+![Travis (.com) branch](https://img.shields.io/travis/com/jedrzejginter/pathy/master.svg?style=flat-square)
+![David](https://img.shields.io/david/jedrzejginter/pathy.svg?style=flat-square)
+
 A small library that will help you with writing paths with dynamic parameters validation.\
 And I hope you will love how easy it is 😍.
 
