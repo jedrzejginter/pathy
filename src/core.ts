@@ -1,16 +1,25 @@
-import { regex } from "./constants";
+import {
+  ANNOTATION_REGEXP,
+  PARAM_DEFINITION_OPENING_REGEXP,
+  LEADING_SLASHES_REPLACE_REGEXP,
+  LEADING_SPACES_REPLACE_REGEXP,
+  TRAILING_SPACES_REPLACE_REGEXP,
+  MULTI_SLASHES_REPLACE_REGEXP,
+  PROTOCOL_SLASHES_REPLACE_REGEXP,
+  TRAILING_SLASHES_REPLACE_REGEXP
+} from "./constants";
 import { assertType } from "./utils";
 
 export function normalizePath(path: string) {
   assertType(path, "path", "string");
 
   return path
-    .replace(regex.protocolSlashesReplace, "://")
-    .replace(regex.multiSlashesReplace, "$1/")
-    .replace(regex.leadingSlashesReplace, "/")
-    .replace(regex.trailingSlashesReplace, "")
-    .replace(regex.leadingSpacesReplace, "")
-    .replace(regex.trailingSpacesReplace, "");
+    .replace(PROTOCOL_SLASHES_REPLACE_REGEXP, "://")
+    .replace(MULTI_SLASHES_REPLACE_REGEXP, "$1/")
+    .replace(LEADING_SLASHES_REPLACE_REGEXP, "/")
+    .replace(TRAILING_SLASHES_REPLACE_REGEXP, "")
+    .replace(LEADING_SPACES_REPLACE_REGEXP, "")
+    .replace(TRAILING_SPACES_REPLACE_REGEXP, "");
 }
 
 export function replaceAnnotation(
@@ -26,32 +35,8 @@ export function stripAnnotations(path: string) {
   assertType(path, "path", "string");
 
   return path
-    .replace(regex.annotation, "")
-    .replace(regex.paramDefinitionOpening, ":");
-}
-
-export function replaceForString(path: string) {
-  return replaceAnnotation(path, regex.strAnnotation, regex.str);
-}
-
-export function replaceForInt(path: string) {
-  return replaceAnnotation(path, regex.intAnnotation, regex.int);
-}
-
-export function replaceForUnsignedInt(path: string) {
-  return replaceAnnotation(path, regex.uintAnnotation, regex.uint);
-}
-
-export function replaceForFloat(path: string) {
-  return replaceAnnotation(path, regex.floatAnnotation, regex.float);
-}
-
-export function replaceForBool(path: string) {
-  return replaceAnnotation(path, regex.boolAnnotation, regex.bool);
-}
-
-export function replaceForUuid(path: string) {
-  return replaceAnnotation(path, regex.uuidAnnotation, regex.uuid);
+    .replace(ANNOTATION_REGEXP, "")
+    .replace(PARAM_DEFINITION_OPENING_REGEXP, ":");
 }
 
 export function applyParams(path: string, params: object) {
@@ -64,34 +49,6 @@ export function applyParams(path: string, params: object) {
   for (const paramName of paramNames) {
     out = out.replace(`:${paramName}`, JSON.stringify(params[paramName]));
   }
-
-  return out;
-}
-
-export function createRoute(path: string) {
-  assertType(path, "path", "string");
-
-  let out = normalizePath(path);
-
-  /**
-   * We HAVE TO create a new RegExp instance every time, because we are using global flag
-   * and it keeps tracks of 'lastIndex' property which results in different behaviour
-   * ('test' method returns false even is should return true).
-   * For more see the accepted answer on Stack Overflow.
-   * @see https://stackoverflow.com/a/6891667
-   */
-  const re = new RegExp(regex.paramDefinitionOpening);
-
-  if (!re.test(out)) {
-    return out;
-  }
-
-  out = replaceForBool(out);
-  out = replaceForFloat(out);
-  out = replaceForInt(out);
-  out = replaceForString(out);
-  out = replaceForUnsignedInt(out);
-  out = replaceForUuid(out);
 
   return out;
 }

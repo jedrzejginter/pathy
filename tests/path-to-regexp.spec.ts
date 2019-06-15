@@ -1,6 +1,6 @@
 import * as pathToRegexp from "path-to-regexp";
 
-import { createRoute } from "../src/core";
+import { createRoute } from "../src";
 
 const UUID = "85e43f8c-36e8-40f4-890f-fd857cba8a81";
 

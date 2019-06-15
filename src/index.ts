@@ -1,1 +1,6 @@
-export { applyParams, createRoute, normalizePath } from "./core";
+import { pathy } from "./api";
+
+const { applyParams, createRoute } = pathy();
+
+export default pathy;
+export { applyParams, createRoute };
