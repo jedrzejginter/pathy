@@ -1,4 +1,4 @@
-import { pathy } from "../src/api";
+import pathy from "../src";
 
 describe("pathy", () => {
   it("should create basic library methods", () => {
