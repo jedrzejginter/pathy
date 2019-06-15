@@ -30,4 +30,26 @@ describe("pathy", () => {
 
     expect(creator).toThrow();
   });
+
+  describe("user-defined annotations", () => {
+    it("should replace for custom annotation", () => {
+      const { createRoute } = pathy({
+        annotations: {
+          mydigit: /\d/
+        }
+      });
+
+      expect(createRoute("/abc/{arg0:mydigit}")).toBe("/abc/:arg0(\\d)");
+    });
+
+    it("should replace for custom annotation", () => {
+      const { applyParams } = pathy({
+        annotations: {
+          myint: /\d+/
+        }
+      });
+
+      expect(applyParams("/abc/{arg0:myint}", { arg0: 30 })).toBe("/abc/30");
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import { createRoute } from "../src/core";
+import { createRoute } from "../src";
 
 describe("edge cases", () => {
   describe("createRoute", () => {

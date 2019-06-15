@@ -1,9 +1,4 @@
-import {
-  applyParams,
-  normalizePath,
-  replaceForBool,
-  replaceForString
-} from "../src/core";
+import { applyParams, normalizePath } from "../src/core";
 
 describe("normalizePath", () => {
   it("should return input when nothing to do", () => {
@@ -45,18 +40,6 @@ describe("normalizePath", () => {
   it("should normalize slashes for protocol if sequence longer than 2", () => {
     expect(normalizePath("http:///abc.com/def")).toBe("http://abc.com/def");
     expect(normalizePath("ws://////abc.com")).toBe("ws://abc.com");
-  });
-});
-
-describe("replaceForString", () => {
-  it("should replace string parameter annotation", () => {
-    expect(replaceForString("/abc/{arg0:str}")).toBe("/abc/:arg0([^\\/]+)");
-  });
-});
-
-describe("replaceForBool", () => {
-  it("should replace boolean parameter annotation", () => {
-    expect(replaceForBool("/abc/{arg0:bool}")).toBe("/abc/:arg0(true|false)");
   });
 });
 
