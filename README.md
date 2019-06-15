@@ -7,6 +7,8 @@ And I hope you will love how easy it is 😍.
 
 - [x] Allow user-defined annotations (no core annotations overwriting possible)
 - [ ] Add API for parsing path values
+- [ ] Provide verbose documentation
+- [ ] Write more tests
 
 ## Syntax
 
@@ -25,6 +27,8 @@ Apart from built-in types, you can define your own - see Examples section for mo
 
 ## Examples
 
+**Basic usage**
+
 ```ts
 import { applyParams, createRoute } from "pathy";
 
@@ -42,6 +46,8 @@ const url = applyParams("/posts/{postId:int}/edit", { postId: 123 });
  */
 const route = createRoute("/posts/{postId:int}");
 ```
+
+**Customizing library features**
 
 ```ts
 import pathy from "pathy";
