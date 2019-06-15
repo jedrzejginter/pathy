@@ -2,20 +2,13 @@ import { PARAM_DEFINITION_OPENING_REGEXP } from "./constants";
 import { applyParams, replaceAnnotation, normalizePath } from "./core";
 import { assertType } from "./utils";
 
-const CORE_BOOL_REGEXP = /(true|false)/;
-const CORE_FLOAT_REGEXP = /(0|-?[1-9]\d{0,128}|-?0\.\d{0,128}[1-9]\d{0,128}|-?[1-9]\d{0,128}\.\d{1,128})/;
-const CORE_INT_REGEXP = /(0|-?[1-9]\d{0,128})/;
-const CORE_STR_REGEXP = /([^\/]+)/;
-const CORE_UINT_REGEXP = /(0|[1-9]\d{0,128})/;
-const CORE_UUID_REGEXP = /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/;
-
 const coreAnnotations = {
-  bool: CORE_BOOL_REGEXP,
-  float: CORE_FLOAT_REGEXP,
-  int: CORE_INT_REGEXP,
-  str: CORE_STR_REGEXP,
-  uint: CORE_UINT_REGEXP,
-  uuid: CORE_UUID_REGEXP
+  bool: /(true|false)/,
+  float: /(0|-?[1-9]\d{0,128}|-?0\.\d{0,128}[1-9]\d{0,128}|-?[1-9]\d{0,128}\.\d{1,128})/,
+  int: /(0|-?[1-9]\d{0,128})/,
+  str: /([^\/]+)/,
+  uint: /(0|[1-9]\d{0,128})/,
+  uuid: /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/
 };
 
 export type PathyAnnotations = {
