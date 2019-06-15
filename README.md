@@ -1,12 +1,17 @@
 # Pathy
 
+![Travis (.com) branch](https://img.shields.io/travis/com/jedrzejginter/pathy/master.svg?style=flat-square)
+![David](https://img.shields.io/david/jedrzejginter/pathy.svg?style=flat-square)
+
 A small library that will help you with writing paths with dynamic parameters validation.\
 And I hope you will love how easy it is 😍.
 
 ## 0.1.0 release checklist
 
-- [ ] Allow user-defined annotations (no core annotations overwriting possible)
+- [x] Allow user-defined annotations (no core annotations overwriting possible)
 - [ ] Add API for parsing path values
+- [ ] Provide verbose documentation
+- [ ] Write more tests
 
 ## Syntax
 
@@ -21,7 +26,11 @@ To define a dynamic parameter in your URL, like post ID for single post view, us
   - **float** - for float values, both negative and positive,
   - **str** - for any non-empty string.
 
-## Example
+Apart from built-in types, you can define your own - see Examples section for more.
+
+## Examples
+
+**Basic usage**
 
 ```ts
 import { applyParams, createRoute } from "pathy";
@@ -39,4 +48,37 @@ const url = applyParams("/posts/{postId:int}/edit", { postId: 123 });
  * to allow only path started with '/posts/' and followed by integer.
  */
 const route = createRoute("/posts/{postId:int}");
+```
+
+**Customizing library features**
+
+```ts
+import pathy from "pathy";
+
+/**
+ * As default export we have a 'pathy' function, that can take an object of options
+ * as an argument.
+ * To add custom annotations see below example.
+ */
+const { applyParams, createRoute } = pathy({
+  /**
+   * We define an object of custom annotations.
+   * Key it the annotation type (here: category) and the value is a RegExp that matches
+   * dynamic parameter for routes.
+   * Important note is that the whole regex should we wrapped in brackets. Also,
+   * don't use ^ and $ in your regex, because they will be ignored anyway.
+   *
+   * We don't allow overwriting built-in annotations (for now), so if you would for example
+   * try to pass custom 'int' annotation, an error will be thrown.
+   */
+  annotations: {
+    category: /(apple|banana|orange)/
+  }
+});
+
+const url = applyParams("/categories/{fruit:category}", { fruit: "apple" });
+// url: "/categories/apple"
+
+const route = createRoute("/categories/{fruit:category}");
+// route: "/categories/:fruit(apple|banana|orange)"
 ```
