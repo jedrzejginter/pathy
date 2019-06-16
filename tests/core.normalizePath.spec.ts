@@ -65,4 +65,9 @@ describe("normalizePath", () => {
     expect(f(" /abc//def//")).toBe("/abc/def");
     expect(f(" http:///abc.com")).toBe("http://abc.com");
   });
+
+  it("should keep parameter definitions", () => {
+    expect(f("/abc/{arg0:int}/")).toBe("/abc/{arg0:int}");
+    expect(f("//abc/{arg0:int}/{arg1:str}")).toBe("/abc/{arg0:int}/{arg1:str}");
+  });
 });
