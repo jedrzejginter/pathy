@@ -1,11 +1,11 @@
-import pathy, { parsePathParams } from "../src";
+import pathy, { extractParams } from "../src";
 
 describe("pathy", () => {
   describe("parsePathParams", () => {
     it("should return object with string params", () => {
       const path = "/abc/{arg0:str}/{arg1:str}";
 
-      expect(parsePathParams(path, "/abc/def/ghi")).toMatchObject({
+      expect(extractParams("/abc/def/ghi", path)).toMatchObject({
         arg0: "def",
         arg1: "ghi",
       });
@@ -14,7 +14,7 @@ describe("pathy", () => {
     it("should return object with parsed int and bool params", () => {
       const path = "/abc/{arg0:int}/{arg1:bool}";
 
-      expect(parsePathParams(path, "/abc/345/true")).toMatchObject({
+      expect(extractParams("/abc/345/true", path)).toMatchObject({
         arg0: 345,
         arg1: true,
       });
@@ -23,9 +23,9 @@ describe("pathy", () => {
     it("should return empty object when cannot match all params", () => {
       const path = "/abc/{arg0:int}/{arg1:bool}";
 
-      expect(parsePathParams(path, "/abc/notint/true")).toMatchObject({});
-      expect(parsePathParams(path, "/abc/123")).toMatchObject({});
-      expect(parsePathParams(path, "/abc/123/yes")).toMatchObject({});
+      expect(extractParams("/abc/notint/true", path)).toMatchObject({});
+      expect(extractParams("/abc/123", path)).toMatchObject({});
+      expect(extractParams("/abc/123/yes", path)).toMatchObject({});
     });
   });
 
@@ -34,25 +34,25 @@ describe("pathy", () => {
 
     expect(instance).toHaveProperty("applyParams");
     expect(instance).toHaveProperty("createRoute");
-    expect(instance).toHaveProperty("parsePathParams");
+    expect(instance).toHaveProperty("extractParams");
   });
 
-  it("should create instance with user-defined annotations", () => {
+  it("should create instance with user-defined types", () => {
     const instance = pathy({
-      annotations: {
+      types: {
         myint: /\d+/,
       },
     });
 
     expect(instance).toHaveProperty("applyParams");
     expect(instance).toHaveProperty("createRoute");
-    expect(instance).toHaveProperty("parsePathParams");
+    expect(instance).toHaveProperty("extractParams");
   });
 
-  it("should throw when overwriting core annotation", () => {
+  it("should throw when overwriting core types", () => {
     const creator = () => {
       pathy({
-        annotations: {
+        types: {
           int: /\d+/,
         },
       });
@@ -61,10 +61,23 @@ describe("pathy", () => {
     expect(creator).toThrow();
   });
 
-  describe("user-defined annotations", () => {
-    it("should replace for custom annotation", () => {
+  it("should not throw when overwriting core types with 'overwriteTypes' set to true", () => {
+    const creator = () => {
+      pathy({
+        overwriteTypes: true,
+        types: {
+          int: /\d+/,
+        },
+      });
+    };
+
+    expect(creator).not.toThrow();
+  });
+
+  describe("user-defined types", () => {
+    it("should replace for custom type", () => {
       const { createRoute } = pathy({
-        annotations: {
+        types: {
           mydigit: /\d/,
         },
       });
@@ -72,9 +85,9 @@ describe("pathy", () => {
       expect(createRoute("/abc/{arg0:mydigit}")).toBe("/abc/:arg0(\\d)");
     });
 
-    it("should replace for custom annotation", () => {
+    it("should replace for custom type", () => {
       const { applyParams } = pathy({
-        annotations: {
+        types: {
           myint: /\d+/,
         },
       });

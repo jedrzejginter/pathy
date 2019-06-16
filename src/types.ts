@@ -1,13 +1,20 @@
-export type PathyTypeAnnotation = {
-  parse?: (value: string) => any;
+export type PathyParamValueParser<T> = (value: string) => T;
+
+export type PathyParamType = {
+  parse?: PathyParamValueParser<any>;
   regex: RegExp;
 };
 
-export type PathyAnnotations = {
-  [k: string]: RegExp | PathyTypeAnnotation;
+export type PathyParamTypes = {
+  [T: string]: RegExp | PathyParamType;
+};
+
+export type PathyParamStruct = {
+  name: string;
+  type: string;
 };
 
 export type PathyOptions = {
-  annotations?: PathyAnnotations;
   overwriteTypes?: boolean;
+  types?: PathyParamTypes;
 };

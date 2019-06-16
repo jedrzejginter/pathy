@@ -1,6 +1,6 @@
-import { pathy } from "./api";
+import { pathy } from "./core";
 
-const { applyParams, createRoute, parsePathParams } = pathy();
+const { applyParams, createRoute, extractParams } = pathy();
 
 export default pathy;
-export { applyParams, createRoute, parsePathParams };
+export { applyParams, createRoute, extractParams };
