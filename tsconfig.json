@@ -6,6 +6,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "lib",
+    "removeComments": true,
     "sourceMap": true,
     "strictNullChecks": true
   },
