@@ -12,16 +12,16 @@ describe("normalizePath", () => {
     expect(f("/abc")).toBe("/abc");
   });
 
-  it("should remove single trailing slash", () => {
-    expect(f("/abc/")).toBe("/abc");
-    expect(f("/abc/def/")).toBe("/abc/def");
+  it("should keep single trailing slash", () => {
+    expect(f("/abc/")).toBe("/abc/");
+    expect(f("/abc/def/")).toBe("/abc/def/");
   });
 
-  it("should remove multiple trailing slashes", () => {
-    expect(f("/abc//")).toBe("/abc");
-    expect(f("/abc///")).toBe("/abc");
-    expect(f("/abc/def//")).toBe("/abc/def");
-    expect(f("/abc/def///")).toBe("/abc/def");
+  it("should replace multiple trailing slashes with single one", () => {
+    expect(f("/abc//")).toBe("/abc/");
+    expect(f("/abc///")).toBe("/abc/");
+    expect(f("/abc/def//")).toBe("/abc/def/");
+    expect(f("/abc/def///")).toBe("/abc/def/");
   });
 
   it("should remove single trailing space", () => {
@@ -62,12 +62,12 @@ describe("normalizePath", () => {
 
   it("should work for combination of incorrect paths", () => {
     expect(f("/abc//def")).toBe("/abc/def");
-    expect(f(" /abc//def//")).toBe("/abc/def");
+    expect(f(" /abc//def//")).toBe("/abc/def/");
     expect(f(" http:///abc.com")).toBe("http://abc.com");
   });
 
   it("should keep parameter definitions", () => {
-    expect(f("/abc/{arg0:int}/")).toBe("/abc/{arg0:int}");
+    expect(f("/abc/{arg0:int}/")).toBe("/abc/{arg0:int}/");
     expect(f("//abc/{arg0:int}/{arg1:str}")).toBe("/abc/{arg0:int}/{arg1:str}");
   });
 });

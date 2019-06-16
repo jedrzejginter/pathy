@@ -32,7 +32,7 @@ export function normalizePath(path: string): string {
     .replace(/\:\/{3,}/, "://")
     .replace(/([^\:])\/{2,}/g, "$1/")
     .replace(/^\/{2,}/, "/")
-    .replace(/\/\s*$/, "");
+    .replace(/\/\s*$/, "/");
 }
 
 export function replaceParamTypeWithRegExp(
