@@ -51,7 +51,7 @@ export function applyParams(path: string, params: object) {
   let out = stripAnnotations(path);
 
   for (const paramName of paramNames) {
-    out = out.replace(`:${paramName}`, JSON.stringify(params[paramName]));
+    out = out.replace(`:${paramName}`, params[paramName]);
   }
 
   return out;

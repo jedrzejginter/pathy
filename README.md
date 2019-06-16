@@ -13,6 +13,16 @@ And I hope you will love how easy it is 😍.
 - [ ] Provide verbose documentation
 - [ ] Write more tests
 
+## Installation
+
+```bash
+# If you are using Yarn:
+yarn add pathy
+
+# If you are using npm:
+npm install pathy
+```
+
 ## Syntax
 
 To define a dynamic parameter in your URL, like post ID for single post view, use this syntax: `{name:type}`.
@@ -40,6 +50,15 @@ import { applyParams, createRoute } from "pathy";
  * Here, 'url' will be '/posts/123/edit'.
  */
 const url = applyParams("/posts/{postId:int}/edit", { postId: 123 });
+// url: "/posts/123/edit"
+
+/**
+ * You can also use this for external urls.
+ */
+const url0 = applyParams("https://someapi.com/api/v{apiVersion:int}", {
+  apiVersion: 2
+});
+// url0: "https://someapi.com/api/v2"
 
 /**
  * Create a route that is compatible with another great package, 'path-to-regexp',

@@ -1,4 +1,4 @@
-export const ANNOTATION_REGEXP = /\:[^\}]+\}/g;
+export const ANNOTATION_REGEXP = /\:[a-zA-Z\d_-]+\}/g;
 export const PARAM_DEFINITION_OPENING_REGEXP = /\{/g;
 export const LEADING_SLASHES_REPLACE_REGEXP = /^\/{2,}/;
 export const LEADING_SPACES_REPLACE_REGEXP = /^\s+/;
