@@ -8,7 +8,7 @@ And I hope you will love how easy it is 😍.
 
 ## 1.0.0 release checklist
 
-- [x] Allow user-defined annotations (no core annotations overwriting possible)
+- [x] Allow user-defined types
 - [x] Add API for parsing path values
 - [ ] Provide verbose documentation
 - [ ] Write more tests
@@ -20,7 +20,7 @@ And I hope you will love how easy it is 😍.
 yarn add pathy
 
 # If you are using npm:
-npm install pathy
+npm install --save pathy
 ```
 
 ## Syntax
@@ -56,7 +56,7 @@ const url = applyParams("/posts/{postId:int}/edit", { postId: 123 });
  * You can also use this for external urls.
  */
 const url0 = applyParams("https://someapi.com/api/v{apiVersion:int}", {
-  apiVersion: 2
+  apiVersion: 2,
 });
 // url0: "https://someapi.com/api/v2"
 
@@ -76,23 +76,23 @@ import pathy from "pathy";
 
 /**
  * As default export we have a 'pathy' function, that can take an object of options
- * as an argument.
- * To add custom annotations see below example.
+ * as an argument and return customized library API.
  */
 const { applyParams, createRoute } = pathy({
   /**
-   * We define an object of custom annotations.
-   * Key it the annotation type (here: category) and the value is a RegExp that matches
+   * We define an object of custom types.
+   * Key is the type name (here: category) and the value is a RegExp that matches
    * dynamic parameter for routes.
    * Important note is that the whole regex should we wrapped in brackets. Also,
    * don't use ^ and $ in your regex, because they will be ignored anyway.
    *
-   * We don't allow overwriting built-in annotations (for now), so if you would for example
-   * try to pass custom 'int' annotation, an error will be thrown.
+   * We don't allow overwriting built-in types by default, but if you need it,
+   * you can set 'overwiteTypes' option to true. Anyway, if you try to add custom 'int'
+   * definition, an error will be thrown.
    */
-  annotations: {
-    category: /(apple|banana|orange)/
-  }
+  types: {
+    category: /(apple|banana|orange)/,
+  },
 });
 
 const url = applyParams("/categories/{fruit:category}", { fruit: "apple" });
@@ -105,15 +105,12 @@ const route = createRoute("/categories/{fruit:category}");
 **Extract URL params for given path**
 
 ```ts
-import { parsePathParams } from "pathy";
+import { extractParams } from "pathy";
 
 /**
  * Get params for url based on specified path.
  * If a parameter can be parsed to anything other than string, it will be.
  */
-const params = parsePathParams(
-  "/posts/{category:str}/{postId:int}",
-  "/posts/fruits/9001"
-);
+const params = extractParams("/posts/{category:str}/{postId:int}", "/posts/fruits/9001");
 // params: { category: "fruits", postId: 9001 }
 ```

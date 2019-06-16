@@ -59,37 +59,30 @@ export function createParameterTypeRegExp(type: string): RegExp {
   return new RegExp(regExpSource, "g");
 }
 
-export function getRegExpForAnnotation(x: RegExp | PathyParamType): RegExp {
-  return x instanceof RegExp ? x : x.regex;
+export function extractRegExpForParamType(regExpOrObj: RegExp | PathyParamType): RegExp {
+  return regExpOrObj instanceof RegExp ? regExpOrObj : regExpOrObj.regex;
 }
 
-export function getParamAnnotationMeta(x: string): PathyParamStruct {
-  const annotationMatch = x.match(/\{([a-zA-Z\d_-]+)\:([a-zA-Z\d_-]+)\}/);
+export function getParamDefinitionStruct(paramDef: string): PathyParamStruct {
+  const paramDefinitionMatch = paramDef.match(/\{([a-zA-Z\d_-]+)\:([a-zA-Z\d_-]+)\}/);
 
-  if (annotationMatch === null) {
-    throw new Error("Couldn't parse annotation");
+  if (paramDefinitionMatch === null) {
+    throw new Error("Couldn't parse parameter definition");
   }
 
-  const [_, name, type] = annotationMatch;
-
+  const [_, name, type] = paramDefinitionMatch;
   return { name, type };
 }
 
-export function extractPathParamsAnnotations(path: string): string[] {
+export function extractParamsDefinitions(path: string): string[] {
   /**
    * The global flag is very important here.
+   * We used 'g' flag in RegExp, so we MUST NOT slice returned array, because what we get here
+   * is the actual array of all matches only.
+   * It would not be the case, if global flag is not set.
    */
-  const matchedAnnotations = path.match(/(\{[a-zA-Z\d_-]+\:[a-zA-Z\d_-]+\})/g);
-
-  if (matchedAnnotations === null) {
-    return [];
-  }
-
-  /**
-   * We used 'g' flag in RegExp, so we MUST NOT slice this array, because what we get here
-   * is the actuall array of all matches only.
-   */
-  return matchedAnnotations;
+  const matchedParamDefinitions = path.match(/(\{[a-zA-Z\d_-]+\:[a-zA-Z\d_-]+\})/g);
+  return matchedParamDefinitions || [];
 }
 
 export function extractValuesOfUrlParams(url: string, route: string): string[] {
@@ -108,13 +101,13 @@ export function pathy(options: PathyOptions = {}) {
 
   const processedCustomTypes = {};
 
-  for (const customType in customTypes) {
-    if (!overwriteTypes && coreTypes.hasOwnProperty(customType)) {
-      throw new Error(`You cannot overwrite ${customType} annotation`);
+  for (const customTypeName in customTypes) {
+    if (!overwriteTypes && coreTypes.hasOwnProperty(customTypeName)) {
+      throw new Error(`You have to set 'overwriteTypes: true' to overwrite built-in types`);
     }
 
-    const customTypeAnnotation = customTypes[customType];
-    const customTypeRegexp: RegExp = getRegExpForAnnotation(customTypeAnnotation);
+    const customType = customTypes[customTypeName];
+    const customTypeRegexp: RegExp = extractRegExpForParamType(customType);
 
     let regexpSource = customTypeRegexp.source
       .replace(/^\s+/, "")
@@ -126,7 +119,7 @@ export function pathy(options: PathyOptions = {}) {
       regexpSource = `(${regexpSource})`;
     }
 
-    processedCustomTypes[customType] = new RegExp(regexpSource);
+    processedCustomTypes[customTypeName] = new RegExp(regexpSource);
   }
 
   const pathyTypes: PathyParamTypes = overwriteTypes
@@ -147,7 +140,7 @@ export function pathy(options: PathyOptions = {}) {
 
     for (const type in pathyTypes) {
       const matchRegExp: RegExp = createParameterTypeRegExp(type);
-      const replaceRegExp: RegExp = getRegExpForAnnotation(pathyTypes[type]);
+      const replaceRegExp: RegExp = extractRegExpForParamType(pathyTypes[type]);
 
       out = replaceParameterTypeWithRegExp(out, matchRegExp, replaceRegExp, keepNames);
     }
@@ -162,7 +155,7 @@ export function pathy(options: PathyOptions = {}) {
      *  Input: "/posts/{postId:uuid}-{postSlug:string}"
      *  Output: ["{postId:uuid}", "{postSlug:string}"]
      */
-    const matchedDynamicParameters: string[] = extractPathParamsAnnotations(path);
+    const matchedDynamicParameters: string[] = extractParamsDefinitions(path);
 
     /**
      * If no parameters definitions found in specified 'path',
@@ -173,7 +166,7 @@ export function pathy(options: PathyOptions = {}) {
       return {};
     }
 
-    const dynamicParameterStructs = matchedDynamicParameters.map(getParamAnnotationMeta);
+    const dynamicParameterStructs = matchedDynamicParameters.map(getParamDefinitionStruct);
     const route = createRoute(path, false);
     const matchedUrlParameterVals = extractValuesOfUrlParams(url, route);
 
