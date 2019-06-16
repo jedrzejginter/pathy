@@ -6,7 +6,7 @@
 A small library that will help you with writing paths with dynamic parameters validation.\
 And I hope you will love how easy it is 😍.
 
-## 1.0.0 release checklist
+## 0.1.0 release checklist
 
 - [x] Allow user-defined annotations (no core annotations overwriting possible)
 - [x] Add API for parsing path values

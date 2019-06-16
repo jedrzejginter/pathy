@@ -1,6 +1,6 @@
 {
   "name": "pathy",
-  "version": "1.0.0-rc1",
+  "version": "0.1.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "repository": "git@github.com:jedrzejginter/pathy.git",
