@@ -7,7 +7,7 @@ describe("pathy", () => {
 
       expect(parsePathParams(path, "/abc/def/ghi")).toMatchObject({
         arg0: "def",
-        arg1: "ghi"
+        arg1: "ghi",
       });
     });
 
@@ -16,16 +16,16 @@ describe("pathy", () => {
 
       expect(parsePathParams(path, "/abc/345/true")).toMatchObject({
         arg0: 345,
-        arg1: true
+        arg1: true,
       });
     });
 
-    it("should return null when cannot match all params", () => {
+    it("should return empty object when cannot match all params", () => {
       const path = "/abc/{arg0:int}/{arg1:bool}";
 
-      expect(parsePathParams(path, "/abc/notint/true")).toBeNull();
-      expect(parsePathParams(path, "/abc/123")).toBeNull();
-      expect(parsePathParams(path, "/abc/123/yes")).toBeNull();
+      expect(parsePathParams(path, "/abc/notint/true")).toMatchObject({});
+      expect(parsePathParams(path, "/abc/123")).toMatchObject({});
+      expect(parsePathParams(path, "/abc/123/yes")).toMatchObject({});
     });
   });
 
@@ -40,8 +40,8 @@ describe("pathy", () => {
   it("should create instance with user-defined annotations", () => {
     const instance = pathy({
       annotations: {
-        myint: /\d+/
-      }
+        myint: /\d+/,
+      },
     });
 
     expect(instance).toHaveProperty("applyParams");
@@ -53,8 +53,8 @@ describe("pathy", () => {
     const creator = () => {
       pathy({
         annotations: {
-          int: /\d+/
-        }
+          int: /\d+/,
+        },
       });
     };
 
@@ -65,8 +65,8 @@ describe("pathy", () => {
     it("should replace for custom annotation", () => {
       const { createRoute } = pathy({
         annotations: {
-          mydigit: /\d/
-        }
+          mydigit: /\d/,
+        },
       });
 
       expect(createRoute("/abc/{arg0:mydigit}")).toBe("/abc/:arg0(\\d)");
@@ -75,8 +75,8 @@ describe("pathy", () => {
     it("should replace for custom annotation", () => {
       const { applyParams } = pathy({
         annotations: {
-          myint: /\d+/
-        }
+          myint: /\d+/,
+        },
       });
 
       expect(applyParams("/abc/{arg0:myint}", { arg0: 30 })).toBe("/abc/30");

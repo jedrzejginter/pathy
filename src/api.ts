@@ -1,61 +1,51 @@
-import { PARAM_DEFINITION_OPENING_REGEXP } from "./constants";
-import { applyParams, replaceAnnotation, normalizePath } from "./core";
-import { assertType } from "./utils";
-
-const coreAnnotations = {
-  bool: /(true|false)/,
-  float: /(0|-?[1-9]\d{0,128}|-?0\.\d{0,128}[1-9]\d{0,128}|-?[1-9]\d{0,128}\.\d{1,128})/,
-  int: /(0|-?[1-9]\d{0,128})/,
-  str: /([^\/]+)/,
-  uint: /(0|[1-9]\d{0,128})/,
-  uuid: /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/
-};
-
-export type PathyAnnotations = {
-  [k: string]: RegExp;
-};
-
-export type PathyOptions = {
-  annotations?: PathyAnnotations;
-};
+import { PARAM_DEFINITION_OPENING_REGEXP, coreAnnotations } from "./constants";
+import {
+  applyParams,
+  replaceAnnotation,
+  normalizePath,
+  createRegExpForType,
+  getRegExpForAnnotation,
+  removeBegginingQuantifier,
+  removeEndingQuantifier,
+  removeLeadingSpaces,
+  removeTrailingSpaces,
+  ensureRegExpCaptureGroup,
+  getParamAnnotationMeta,
+} from "./core";
+import { PathyOptions, PathyAnnotations } from "./types";
+import { assertString } from "./utils";
 
 export function pathy(options: PathyOptions = {}) {
   const userDefinedAnnotations = options.annotations || {};
+  const overwriteTypes = options.overwriteTypes || false;
 
   const additionalAnnotations = {};
 
   for (const userDefinedType in userDefinedAnnotations) {
-    if (coreAnnotations.hasOwnProperty(userDefinedType)) {
+    if (!overwriteTypes && coreAnnotations.hasOwnProperty(userDefinedType)) {
       throw new Error(`You cannot overwrite ${userDefinedType} annotation`);
     }
 
-    const userDefinedRegexp = userDefinedAnnotations[userDefinedType];
-    let src = userDefinedRegexp.source;
+    const customTypeAnnotation = userDefinedAnnotations[userDefinedType];
+    const customTypeRegexp: RegExp = getRegExpForAnnotation(customTypeAnnotation);
 
-    src = src.replace(/^\s*(.*)\s*$/, "$1");
+    let regexpSource = customTypeRegexp.source;
 
-    if (src.startsWith("^")) {
-      src = src.slice(1);
-    }
+    regexpSource = removeLeadingSpaces(regexpSource);
+    regexpSource = removeTrailingSpaces(regexpSource);
+    regexpSource = removeBegginingQuantifier(regexpSource);
+    regexpSource = removeEndingQuantifier(regexpSource);
+    regexpSource = ensureRegExpCaptureGroup(regexpSource);
 
-    if (src.endsWith("$")) {
-      src = src.slice(0, src.length - 1);
-    }
-
-    if (!src.startsWith("(") || !src.endsWith(")")) {
-      src = `(${src})`;
-    }
-
-    additionalAnnotations[userDefinedType] = new RegExp(src);
+    additionalAnnotations[userDefinedType] = new RegExp(regexpSource);
   }
 
-  const annotations = {
-    ...additionalAnnotations,
-    ...coreAnnotations
-  };
+  const annotations: PathyAnnotations = overwriteTypes
+    ? { ...coreAnnotations, ...additionalAnnotations }
+    : { ...additionalAnnotations, ...coreAnnotations };
 
   function createRoute(path: string, keepNames: boolean = true) {
-    assertType(path, "path", "string");
+    assertString(path, "path");
 
     let out = normalizePath(path);
 
@@ -73,64 +63,49 @@ export function pathy(options: PathyOptions = {}) {
     }
 
     for (const type in annotations) {
-      const re0 = new RegExp(`\\{([\\da-zA-Z_]{1,128})\\:${type}\\}`, "g");
-      const re1 = annotations[type];
+      const matchRegExp: RegExp = createRegExpForType(type);
+      const replaceRegExp: RegExp = getRegExpForAnnotation(annotations[type]);
 
-      out = replaceAnnotation(out, re0, re1, keepNames);
+      out = replaceAnnotation(out, matchRegExp, replaceRegExp, keepNames);
     }
 
     return out;
   }
 
-  function parsePathParams(path: string, url: string): object | null {
-    assertType(path, "path", "string");
-    assertType(url, "url", "string");
+  function parsePathParams(path: string, url: string): object {
+    assertString(path, "path");
+    assertString(url, "url");
 
-    const annotations = path.match(/\{[a-zA-Z\d_-]+\:[a-zA-Z\d_-]+\}/g);
+    const matchedAnnotations = path.match(/\{[a-zA-Z\d_-]+\:[a-zA-Z\d_-]+\}/g);
 
-    if (annotations === null) {
+    if (matchedAnnotations === null) {
       return {};
     }
 
-    const parsed = annotations.map((annotation: string) => {
-      const annotationMatch = annotation.match(
-        /\{([a-zA-Z\d_-]+)\:([a-zA-Z\d_-]+)\}/
-      );
+    const pathParamsMetadata = matchedAnnotations.map(getParamAnnotationMeta);
+    const pathRoute = createRoute(path, false);
+    const urlMatchedParams = url.match(new RegExp(pathRoute));
 
-      if (annotationMatch === null) {
-        throw new Error("Couldn't parse annotation");
-      }
-
-      const [_, name, type] = annotationMatch;
-
-      return { annotation, name, type };
-    });
-
-    const route = createRoute(path, false);
-    const matched = url.match(new RegExp(route));
-
-    if (matched === null) {
-      return null;
+    if (urlMatchedParams === null) {
+      return {};
     }
 
-    const matches = matched.slice(1);
+    const matches = urlMatchedParams.slice(1);
 
-    if (matches.length !== parsed.length) {
-      return null;
+    if (matches.length !== pathParamsMetadata.length) {
+      return {};
     }
 
     const params = {};
 
     matches.forEach((match, index) => {
-      const { name, type } = parsed[index];
+      const { name, type } = pathParamsMetadata[index];
+      const x = annotations[type];
+      const parse = x instanceof RegExp ? null : x.parse;
       let value: string | number | boolean = match;
 
-      if (type === "int" || type === "uint") {
-        value = parseInt(value, 10);
-      } else if (type === "bool") {
-        value = value === "true";
-      } else if (type === "float") {
-        value = parseFloat(value);
+      if (typeof parse === "function") {
+        value = parse(value);
       }
 
       params[name] = value;
@@ -142,6 +117,6 @@ export function pathy(options: PathyOptions = {}) {
   return {
     applyParams,
     createRoute,
-    parsePathParams
+    parsePathParams,
   };
 }
