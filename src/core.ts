@@ -18,14 +18,21 @@ export const coreTypes: PathyParamTypes = {
   uuid: /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/,
 };
 
-export function normalizePath(path: string) {
-  return path
+export function normalizePath(path: string): string {
+  /**
+   * Remove leading and trailing white spaces at first.
+   */
+  const transformedPath = path.replace(/^\s+/, "").replace(/\s+$/, "");
+
+  if (transformedPath === "/") {
+    return transformedPath;
+  }
+
+  return transformedPath
     .replace(/\:\/{3,}/, "://")
     .replace(/([^\:])\/{2,}/g, "$1/")
     .replace(/^\/{2,}/, "/")
-    .replace(/\/\s*$/, "")
-    .replace(/^\s+/, "")
-    .replace(/\s+$/, "");
+    .replace(/\/\s*$/, "");
 }
 
 export function replaceParameterTypeWithRegExp(
