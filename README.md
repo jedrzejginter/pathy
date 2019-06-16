@@ -9,7 +9,7 @@ And I hope you will love how easy it is 😍.
 ## 0.1.0 release checklist
 
 - [x] Allow user-defined annotations (no core annotations overwriting possible)
-- [ ] Add API for parsing path values
+- [x] Add API for parsing path values
 - [ ] Provide verbose documentation
 - [ ] Write more tests
 
@@ -81,4 +81,20 @@ const url = applyParams("/categories/{fruit:category}", { fruit: "apple" });
 
 const route = createRoute("/categories/{fruit:category}");
 // route: "/categories/:fruit(apple|banana|orange)"
+```
+
+**Extract URL params for given path**
+
+```ts
+import { parsePathParams } from "pathy";
+
+/**
+ * Get params for url based on specified path.
+ * If a parameter can be parsed to anything other than string, it will be.
+ */
+const params = parsePathParams(
+  "/posts/{category:str}/{postId:int}",
+  "/posts/fruits/9001"
+);
+// params: { category: "fruits", postId: 9001 }
 ```
