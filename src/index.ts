@@ -1,4 +1,4 @@
-import { pathy } from "./core";
+import { pathy } from "./pathy";
 
 const { applyParams, createRoute, extractParams } = pathy();
 
