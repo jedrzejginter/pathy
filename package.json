@@ -1,6 +1,6 @@
 {
   "name": "pathy",
-  "version": "0.1.0",
+  "version": "1.0.0-rc1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "repository": "git@github.com:jedrzejginter/pathy.git",
@@ -11,6 +11,8 @@
   },
   "scripts": {
     "build": "tsc",
+    "clean": "rimraf lib package pathy-*.tgz",
+    "pre-publish": "yarn clean && yarn build && npm pack",
     "test": "jest"
   },
   "devDependencies": {
@@ -18,7 +20,11 @@
     "@types/node": "12.0.8",
     "jest": "24.8.0",
     "path-to-regexp": "3.0.0",
+    "rimraf": "2.6.3",
     "ts-jest": "24.0.2",
     "typescript": "3.5.2"
-  }
+  },
+  "files": [
+    "lib"
+  ]
 }
