@@ -9,9 +9,19 @@ And I hope you will love how easy it is 😍.
 ## 0.1.0 release checklist
 
 - [x] Allow user-defined annotations (no core annotations overwriting possible)
-- [ ] Add API for parsing path values
+- [x] Add API for parsing path values
 - [ ] Provide verbose documentation
 - [ ] Write more tests
+
+## Installation
+
+```bash
+# If you are using Yarn:
+yarn add pathy
+
+# If you are using npm:
+npm install pathy
+```
 
 ## Syntax
 
@@ -40,6 +50,15 @@ import { applyParams, createRoute } from "pathy";
  * Here, 'url' will be '/posts/123/edit'.
  */
 const url = applyParams("/posts/{postId:int}/edit", { postId: 123 });
+// url: "/posts/123/edit"
+
+/**
+ * You can also use this for external urls.
+ */
+const url0 = applyParams("https://someapi.com/api/v{apiVersion:int}", {
+  apiVersion: 2
+});
+// url0: "https://someapi.com/api/v2"
 
 /**
  * Create a route that is compatible with another great package, 'path-to-regexp',
@@ -81,4 +100,20 @@ const url = applyParams("/categories/{fruit:category}", { fruit: "apple" });
 
 const route = createRoute("/categories/{fruit:category}");
 // route: "/categories/:fruit(apple|banana|orange)"
+```
+
+**Extract URL params for given path**
+
+```ts
+import { parsePathParams } from "pathy";
+
+/**
+ * Get params for url based on specified path.
+ * If a parameter can be parsed to anything other than string, it will be.
+ */
+const params = parsePathParams(
+  "/posts/{category:str}/{postId:int}",
+  "/posts/fruits/9001"
+);
+// params: { category: "fruits", postId: 9001 }
 ```

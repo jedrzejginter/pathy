@@ -25,10 +25,14 @@ export function normalizePath(path: string) {
 export function replaceAnnotation(
   path: string,
   match: RegExp,
-  replace: RegExp
+  replace: RegExp,
+  keepName: boolean = true
 ) {
   assertType(path, "path", "string");
-  return path.replace(match, `:$1${replace.source}`);
+
+  const replaceWith = keepName ? `:$1${replace.source}` : replace.source;
+
+  return path.replace(match, replaceWith);
 }
 
 export function stripAnnotations(path: string) {
@@ -47,7 +51,7 @@ export function applyParams(path: string, params: object) {
   let out = stripAnnotations(path);
 
   for (const paramName of paramNames) {
-    out = out.replace(`:${paramName}`, JSON.stringify(params[paramName]));
+    out = out.replace(`:${paramName}`, params[paramName]);
   }
 
   return out;
