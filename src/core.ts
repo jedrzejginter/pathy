@@ -7,14 +7,14 @@ export const coreTypes: PathyParamTypes = {
   },
   float: {
     parse: (value: string): number => parseFloat(value),
-    regex: /(0|-?[1-9]\d{0,128}|-?0\.\d{0,128}[1-9]\d{0,128}|-?[1-9]\d{0,128}\.\d{1,128})/,
+    regex: /(0|-?[1-9]\d*|-?0\.\d*[1-9]\d*|-?[1-9]\d*\.\d+)/,
   },
   int: {
     parse: (value: string): number => parseInt(value, 10),
-    regex: /(0|-?[1-9]\d{0,128})/,
+    regex: /(0|-?[1-9]\d*)/,
   },
   str: /([^\/]+)/,
-  uint: /(0|[1-9]\d{0,128})/,
+  uint: /(0|[1-9]\d*)/,
   uuid: /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/,
 };
 
@@ -35,34 +35,18 @@ export function normalizePath(path: string): string {
     .replace(/\/\s*$/, "");
 }
 
-export function replaceParameterTypeWithRegExp(
+export function replaceParamTypeWithRegExp(
   path: string,
   match: RegExp,
   replace: RegExp,
   keepName: boolean = true,
-) {
+): string {
   const replaceWith = keepName ? `:$1${replace.source}` : replace.source;
   return path.replace(match, replaceWith);
 }
 
-export function removeParameterTypes(path: string) {
-  return path.replace(/\{([a-z\d_-]+)\:[a-z\d_-]+\}/gi, ":$1");
-}
-
-export function applyParams(path: string, params: object) {
-  const paramNames = Object.keys(params);
-  let pathWithParamsApplied = removeParameterTypes(path);
-
-  for (const paramName of paramNames) {
-    const paramValue = params[paramName];
-    pathWithParamsApplied = pathWithParamsApplied.replace(`:${paramName}`, paramValue);
-  }
-
-  return pathWithParamsApplied;
-}
-
-export function createParameterTypeRegExp(type: string): RegExp {
-  const regExpSource = `\\{([a-zA-Z\\d_-]{1,128})\\:${type}\\}`;
+export function createParamDefinitionRegExp(type: string): RegExp {
+  const regExpSource = `\\{([a-zA-Z\\d_-]+)\\:${type}\\}`;
   return new RegExp(regExpSource, "g");
 }
 
@@ -81,6 +65,20 @@ export function getParamDefinitionStruct(paramDef: string): PathyParamStruct {
   return { name, type };
 }
 
+export function applyParams(path: string, params: object): string {
+  const paramNames = Object.keys(params);
+  let pathWithParamsApplied = path;
+
+  for (const paramName of paramNames) {
+    const paramValue = params[paramName];
+    const regExpForParamName = new RegExp(`\\{${paramName}\\:[a-zA-Z\\d_-]+\\}`);
+
+    pathWithParamsApplied = pathWithParamsApplied.replace(regExpForParamName, paramValue);
+  }
+
+  return pathWithParamsApplied;
+}
+
 export function extractParamsDefinitions(path: string): string[] {
   /**
    * The global flag is very important here.
@@ -94,12 +92,7 @@ export function extractParamsDefinitions(path: string): string[] {
 
 export function extractValuesOfUrlParams(url: string, route: string): string[] {
   const valuesOfParams = url.match(new RegExp(route));
-
-  if (valuesOfParams === null) {
-    return [];
-  }
-
-  return valuesOfParams.slice(1);
+  return valuesOfParams ? valuesOfParams.slice(1) : [];
 }
 
 export function pathy(options: PathyOptions = {}) {
@@ -146,10 +139,10 @@ export function pathy(options: PathyOptions = {}) {
     }
 
     for (const type in pathyTypes) {
-      const matchRegExp: RegExp = createParameterTypeRegExp(type);
+      const matchRegExp: RegExp = createParamDefinitionRegExp(type);
       const replaceRegExp: RegExp = extractRegExpForParamType(pathyTypes[type]);
 
-      out = replaceParameterTypeWithRegExp(out, matchRegExp, replaceRegExp, keepNames);
+      out = replaceParamTypeWithRegExp(out, matchRegExp, replaceRegExp, keepNames);
     }
 
     return out;
