@@ -9,6 +9,6 @@
     "sourceMap": true,
     "strictNullChecks": true
   },
-  "exclude": ["node_modules", "./tests"],
+  "exclude": ["node_modules"],
   "include": ["./src"]
 }
