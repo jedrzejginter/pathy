@@ -6,8 +6,9 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "lib",
-    "sourceMap": true
+    "sourceMap": true,
+    "strictNullChecks": true
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "./tests"],
   "include": ["./src"]
 }

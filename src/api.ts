@@ -54,7 +54,7 @@ export function pathy(options: PathyOptions = {}) {
     ...coreAnnotations
   };
 
-  function createRoute(path: string) {
+  function createRoute(path: string, keepNames: boolean = true) {
     assertType(path, "path", "string");
 
     let out = normalizePath(path);
@@ -76,14 +76,72 @@ export function pathy(options: PathyOptions = {}) {
       const re0 = new RegExp(`\\{([\\da-zA-Z_]{1,128})\\:${type}\\}`, "g");
       const re1 = annotations[type];
 
-      out = replaceAnnotation(out, re0, re1);
+      out = replaceAnnotation(out, re0, re1, keepNames);
     }
 
     return out;
   }
 
+  function parsePathParams(path: string, url: string): object | null {
+    assertType(path, "path", "string");
+    assertType(url, "url", "string");
+
+    const annotations = path.match(/\{[a-zA-Z\d_-]+\:[a-zA-Z\d_-]+\}/g);
+
+    if (annotations === null) {
+      return {};
+    }
+
+    const parsed = annotations.map((annotation: string) => {
+      const annotationMatch = annotation.match(
+        /\{([a-zA-Z\d_-]+)\:([a-zA-Z\d_-]+)\}/
+      );
+
+      if (annotationMatch === null) {
+        throw new Error("Couldn't parse annotation");
+      }
+
+      const [_, name, type] = annotationMatch;
+
+      return { annotation, name, type };
+    });
+
+    const route = createRoute(path, false);
+    const matched = url.match(new RegExp(route));
+
+    if (matched === null) {
+      return null;
+    }
+
+    const matches = matched.slice(1);
+
+    if (matches.length !== parsed.length) {
+      return null;
+    }
+
+    const params = {};
+
+    matches.forEach((match, index) => {
+      const { name, type } = parsed[index];
+      let value: string | number | boolean = match;
+
+      if (type === "int" || type === "uint") {
+        value = parseInt(value, 10);
+      } else if (type === "bool") {
+        value = value === "true";
+      } else if (type === "float") {
+        value = parseFloat(value);
+      }
+
+      params[name] = value;
+    });
+
+    return params;
+  }
+
   return {
     applyParams,
-    createRoute
+    createRoute,
+    parsePathParams
   };
 }
