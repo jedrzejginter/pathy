@@ -4,7 +4,7 @@
 ![David](https://img.shields.io/david/jedrzejginter/pathy.svg?style=flat-square)
 
 A small library that will help you with writing url paths and assigning a validation pattern to each of them.\
-See 'Examples' section to see how it works.
+See 'API Reference' section for more information on how it works.
 
 ### Thanks to
 
