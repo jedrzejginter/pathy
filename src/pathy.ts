@@ -86,8 +86,6 @@ export function pathy(options: PathyOptions = {}) {
     const route = createRoute(path, false);
     const matchedUrlParameterVals = extractValuesOfUrlParams(url, route);
 
-    console.log(dynamicParameterStructs, route, matchedUrlParameterVals);
-
     if (
       matchedUrlParameterVals.length === 0 ||
       matchedUrlParameterVals.length !== dynamicParameterStructs.length
