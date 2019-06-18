@@ -139,7 +139,7 @@ const route = createRoute("/blog/posts/{postId:int}", false);
 // Now you can do: new RegExp(route)
 ```
 
-### `extractParams(url: string, path: string)`
+### `extractParams(path: string, url: string)`
 
 **What it does?**
 
