@@ -64,7 +64,7 @@ export function pathy(options: PathyOptions = {}) {
     return out;
   }
 
-  function extractParams(url: string, path: string): object {
+  function extractParams(path: string, url: string): object {
     /**
      * Get all dynamic parameters definitions inside specified 'path'.
      * Example:

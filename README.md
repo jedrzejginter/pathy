@@ -151,14 +151,14 @@ If a parameter can be transformed to something else than string (like `:int` doe
 ```ts
 import { extractParams } from "pathy";
 
-const params = extractParams("/api/v1/posts/123", "/api/v1/{resource:str}/{postId:int}");
+const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/posts/123");
 // params: { resource: "posts", postId: 123 }
 // Notice, that postId is converted to number.
 
 /**
  * Params object will be empty, if at least one parameter cannot be matched.
  */
-const params = extractParams("/api/v1/posts/not-an-integer", "/api/v1/{resource:str}/{postId:int}");
+const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/posts/not-an-integer");
 // params: {}
 ```
 
