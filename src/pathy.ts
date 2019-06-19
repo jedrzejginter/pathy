@@ -1,6 +1,5 @@
 import { PathyOptions, PathyParamTypes } from "./types";
 import {
-  applyParams,
   coreTypes,
   createParamDefinitionRegExp,
   extractParamsDefinitions,
@@ -9,6 +8,8 @@ import {
   getParamDefinitionStruct,
   normalizePath,
   replaceParamTypeWithRegExp,
+  validateParams,
+  validatePath,
 } from "./core";
 
 export function pathy(options: PathyOptions = {}) {
@@ -42,7 +43,29 @@ export function pathy(options: PathyOptions = {}) {
     ? { ...coreTypes, ...processedCustomTypes }
     : { ...processedCustomTypes, ...coreTypes };
 
+  function applyParams(path: string, params: object): string {
+    const paramNames = Object.keys(params);
+    let pathWithParamsApplied = path;
+
+    validateParams(path, params, pathyTypes);
+
+    for (const paramName of paramNames) {
+      const paramValue = params[paramName];
+      const regExpForParamName = new RegExp(`\\{${paramName}\\:[a-zA-Z\\d_-]+\\}`);
+
+      pathWithParamsApplied = pathWithParamsApplied.replace(regExpForParamName, paramValue);
+    }
+
+    return pathWithParamsApplied;
+  }
+
   function createRoute(path: string, keepNames: boolean = true) {
+    /**
+     * Check, if specified path is correct.
+     * It will throw if something is not right.
+     */
+    validatePath(path, pathyTypes);
+
     let out = normalizePath(path);
 
     /**
@@ -64,7 +87,13 @@ export function pathy(options: PathyOptions = {}) {
     return out;
   }
 
-  function extractParams(url: string, path: string): object {
+  function extractParams(path: string, url: string): object {
+    /**
+     * Check, if specified path is correct.
+     * It will throw if something is not right.
+     */
+    validatePath(path, pathyTypes);
+
     /**
      * Get all dynamic parameters definitions inside specified 'path'.
      * Example:
@@ -85,8 +114,6 @@ export function pathy(options: PathyOptions = {}) {
     const dynamicParameterStructs = matchedDynamicParameters.map(getParamDefinitionStruct);
     const route = createRoute(path, false);
     const matchedUrlParameterVals = extractValuesOfUrlParams(url, route);
-
-    console.log(dynamicParameterStructs, route, matchedUrlParameterVals);
 
     if (
       matchedUrlParameterVals.length === 0 ||

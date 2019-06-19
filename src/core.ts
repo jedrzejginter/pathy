@@ -1,4 +1,4 @@
-import { PathyParamStruct, PathyOptions, PathyParamType, PathyParamTypes } from "./types";
+import { PathyParamStruct, PathyParamType, PathyParamTypes } from "./types";
 
 export const coreTypes: PathyParamTypes = {
   bool: {
@@ -7,7 +7,7 @@ export const coreTypes: PathyParamTypes = {
   },
   float: {
     parse: (value: string): number => parseFloat(value),
-    regex: /(0|-?[1-9]\d*|-?0\.\d*[1-9]\d*|-?[1-9]\d*\.\d+)/,
+    regex: /(0\.\d+|-0\.\d*[1-9]\d*|-?[1-9]\d*\.\d+)/,
   },
   int: {
     parse: (value: string): number => parseInt(value, 10),
@@ -58,25 +58,59 @@ export function getParamDefinitionStruct(paramDef: string): PathyParamStruct {
   const paramDefinitionMatch = paramDef.match(/\{([a-zA-Z\d_-]+)\:([a-zA-Z\d_-]+)\}/);
 
   if (paramDefinitionMatch === null) {
-    throw new Error("Couldn't parse parameter definition");
+    throw new Error("Couldn't parse parameter definition.");
   }
 
   const [_, name, type] = paramDefinitionMatch;
   return { name, type };
 }
 
-export function applyParams(path: string, params: object): string {
-  const paramNames = Object.keys(params);
-  let pathWithParamsApplied = path;
+export function validatePath(path: string, types: PathyParamTypes): boolean {
+  const paramDefinitions: string[] = extractParamsDefinitions(path);
+  const paramStructs: PathyParamStruct[] = paramDefinitions.map(getParamDefinitionStruct);
 
-  for (const paramName of paramNames) {
-    const paramValue = params[paramName];
-    const regExpForParamName = new RegExp(`\\{${paramName}\\:[a-zA-Z\\d_-]+\\}`);
+  for (const { type } of paramStructs) {
+    const typeDef = types[type];
 
-    pathWithParamsApplied = pathWithParamsApplied.replace(regExpForParamName, paramValue);
+    if (!typeDef) {
+      throw new Error(`Unknown type '${type}'. Either a typo, or you forgot to add a custom type.`);
+    }
   }
 
-  return pathWithParamsApplied;
+  return true;
+}
+
+export function validateParams(path: string, params: object, types: PathyParamTypes): boolean {
+  const paramDefinitions: string[] = extractParamsDefinitions(path);
+  const paramStructs: PathyParamStruct[] = paramDefinitions.map(getParamDefinitionStruct);
+
+  for (const { name, type } of paramStructs) {
+    const typeDef = types[type];
+
+    if (!typeDef) {
+      throw new Error(`Unknown type '${type}'. Either a typo, or you forgot to add a custom type.`);
+    }
+
+    const regExp: RegExp = extractRegExpForParamType(typeDef);
+    const paramValue: string | number | undefined = params[name];
+
+    if (!paramValue) {
+      throw new Error(`Parameter value for '${name}' is missing.`);
+    }
+
+    const regExpMoreStrict: RegExp = new RegExp(`^${regExp.source}$`, regExp.flags);
+    const paramValueAsStr: string = String(paramValue);
+
+    if (!regExpMoreStrict.test(paramValueAsStr)) {
+      throw new Error(
+        `Expected parameter value for '${name}' to match '${
+          regExpMoreStrict.source
+        }' (got: '${paramValueAsStr}').`,
+      );
+    }
+  }
+
+  return true;
 }
 
 export function extractParamsDefinitions(path: string): string[] {
