@@ -27,6 +27,89 @@ describe("module entry", () => {
     expect(mod.extractParams).toBeInstanceOf(Function);
   });
 
+  describe("applyParams", () => {
+    it("should be a function", () => {
+      expect(mod.applyParams).toBeInstanceOf(Function);
+    });
+
+    it("should be an identity function when no params passed", () => {
+      expect(mod.applyParams("/abc/def", {})).toBe("/abc/def");
+    });
+
+    it("should be an identity function when no params specified", () => {
+      expect(mod.applyParams("/abc/def", { arg0: 123 })).toBe("/abc/def");
+    });
+
+    it("should apply single param", () => {
+      expect(mod.applyParams("/abc/def/{arg0:int}", { arg0: 123 })).toBe("/abc/def/123");
+    });
+
+    it("should apply multiple params", () => {
+      expect(mod.applyParams("/abc/def/{arg0:int}/{arg1:str}", { arg0: 123, arg1: "my-str" })).toBe(
+        "/abc/def/123/my-str",
+      );
+    });
+
+    it("should work for params that uses kebab case naming convention", () => {
+      expect(mod.applyParams("/abc/def/{my-arg:int}", { "my-arg": 123 })).toBe("/abc/def/123");
+    });
+
+    it("should work for params that uses spaces in name", () => {
+      expect(mod.applyParams("/abc/def/{my arg:int}", { "my arg": 123 })).toBe("/abc/def/123");
+    });
+
+    it("should be case-sensitive and throw for param names that differ in casing", () => {
+      expect(() => mod.applyParams("/abc/def/{myArgument:int}", { myargument: 123 })).toThrowError(
+        "Parameter value for 'myArgument' is missing",
+      );
+    });
+
+    it("should throw when using unknown type", () => {
+      expect(() => mod.applyParams("/abc/def/{arg0:fakeType}", { arg0: 123 })).toThrowError(
+        "Unknown type 'fakeType'. Either a typo, or you forgot to add a custom type.",
+      );
+    });
+
+    it("should throw when passing param invalid value", () => {
+      expect(() => mod.applyParams("/abc/def/{arg0:bool}", { arg0: "yes" })).toThrowError(
+        "Expected parameter value for 'arg0' to match '^(true|false)$' (got: 'yes').",
+      );
+    });
+  });
+
+  describe("createRoute", () => {
+    it("should be an identity function for no params", () => {
+      expect(mod.createRoute("/abc/def")).toBe("/abc/def");
+    });
+
+    it("should return a normalized path", () => {
+      expect(mod.createRoute("//abc/def")).toBe("/abc/def");
+      expect(mod.createRoute("/abc/def/")).toBe("/abc/def/");
+    });
+
+    it("should create a route for single param", () => {
+      expect(mod.createRoute("/abc/{arg0:bool}")).toBe("/abc/:arg0(true|false)");
+    });
+
+    it("should create a route for mulitple params", () => {
+      expect(mod.createRoute("/abc/{arg0:bool}/{arg1:str}")).toBe(
+        "/abc/:arg0(true|false)/:arg1([^\\/]+)",
+      );
+    });
+
+    it("should leave unreplaced params definitions for unknown types", () => {
+      expect(mod.createRoute("/abc/{arg0:bool}/{arg1:incorrectType}")).toBe(
+        "/abc/:arg0(true|false)/{arg1:incorrectType}",
+      );
+    });
+
+    it("should work with specifying params name and regex directly", () => {
+      expect(mod.createRoute("/abc/{arg0:bool}/:arg1(\\d+)")).toBe(
+        "/abc/:arg0(true|false)/:arg1(\\d+)",
+      );
+    });
+  });
+
   describe("extractParams", () => {
     it("should return an empty object when no dynamic params specified", () => {
       expect(mod.extractParams("/abc/def", "/abc/def")).toMatchObject({});

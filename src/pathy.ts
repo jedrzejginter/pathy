@@ -1,6 +1,5 @@
 import { PathyOptions, PathyParamTypes } from "./types";
 import {
-  applyParams,
   coreTypes,
   createParamDefinitionRegExp,
   extractParamsDefinitions,
@@ -9,6 +8,7 @@ import {
   getParamDefinitionStruct,
   normalizePath,
   replaceParamTypeWithRegExp,
+  validateParams,
 } from "./core";
 
 export function pathy(options: PathyOptions = {}) {
@@ -41,6 +41,22 @@ export function pathy(options: PathyOptions = {}) {
   const pathyTypes: PathyParamTypes = overwriteTypes
     ? { ...coreTypes, ...processedCustomTypes }
     : { ...processedCustomTypes, ...coreTypes };
+
+  function applyParams(path: string, params: object): string {
+    const paramNames = Object.keys(params);
+    let pathWithParamsApplied = path;
+
+    validateParams(path, params, pathyTypes);
+
+    for (const paramName of paramNames) {
+      const paramValue = params[paramName];
+      const regExpForParamName = new RegExp(`\\{${paramName}\\:[a-zA-Z\\d_-]+\\}`);
+
+      pathWithParamsApplied = pathWithParamsApplied.replace(regExpForParamName, paramValue);
+    }
+
+    return pathWithParamsApplied;
+  }
 
   function createRoute(path: string, keepNames: boolean = true) {
     let out = normalizePath(path);
