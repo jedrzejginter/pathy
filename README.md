@@ -45,7 +45,7 @@ const pathy = pathy({
   types: {
     myNumber: {
       parse: (value) => Number(value),
-      regex: /(\\d+)/,
+      regex: /(\d+)/,
     },
   },
 });
