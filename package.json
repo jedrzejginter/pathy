@@ -1,10 +1,23 @@
 {
   "name": "pathy",
-  "version": "1.0.0-rc2",
+  "version": "1.0.0-rc3",
+  "description": "A small library that will help you with writing url paths and assigning a validation pattern to each of them",
+  "keywords": [
+    "path",
+    "validation",
+    "routing"
+  ],
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "repository": "git@github.com:jedrzejginter/pathy.git",
-  "author": "Jedrzej Ginter <dzeejj@gmail.com> (https://github.com/jedrzejginter)",
+  "bugs": {
+    "url": "https://github.com/jedrzejginter/pathy/issues"
+  },
+  "author": {
+    "name": "Jedrzej Ginter",
+    "email": "dzeejj@gmail.com",
+    "url": "https://github.com/jedrzejginter"
+  },
   "license": "MIT",
   "engines": {
     "node": ">=10.13.0"
