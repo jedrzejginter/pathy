@@ -14,10 +14,10 @@ A big shout-out to [Richard Hoffman](https://www.npmjs.com/~coverslide) who dona
 
 ```bash
 # If you are using Yarn:
-yarn add pathy
+yarn add pathy@next
 
 # If you are using npm:
-npm install --save pathy
+npm install --save pathy@next
 ```
 
 ## API Reference
