@@ -1,6 +1,7 @@
 # Pathy
 
 ![Travis (.com) branch](https://img.shields.io/travis/com/jedrzejginter/pathy/master.svg?style=flat-square)
+![npm](https://img.shields.io/npm/dm/pathy.svg?style=flat-square)
 ![David](https://img.shields.io/david/jedrzejginter/pathy.svg?style=flat-square)
 
 A small library that will help you with writing url paths and assigning a validation pattern to each of them.\
