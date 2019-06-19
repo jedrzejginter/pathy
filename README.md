@@ -167,7 +167,7 @@ const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/pos
 
 ## Parameters Syntax
 
-To define a dynamic parameter in your url (like post ID) use this really simple syntax: `{name:type}`.\
+To define a dynamic parameter in your url (like post ID) use this really simple syntax: `{name:type}`.
 
 All parameters are forced to have a **name**.\
 My recommendation is to use pascal case naming convention, but anyway you are not limited as long as the parameter name matches `/^[a-zA-Z0-9-_]+$/`.
