@@ -7,7 +7,7 @@ export const coreTypes: PathyParamTypes = {
   },
   float: {
     parse: (value: string): number => parseFloat(value),
-    regex: /(0|-?[1-9]\d*|-?0\.\d*[1-9]\d*|-?[1-9]\d*\.\d+)/,
+    regex: /(0|-?[1-9]\d*|0\.\d+|-0\.\d*[1-9]\d*|-?[1-9]\d*\.\d+)/,
   },
   int: {
     parse: (value: string): number => parseInt(value, 10),

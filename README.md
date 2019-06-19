@@ -165,17 +165,20 @@ const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/pos
 ## Parameters Syntax
 
 To define a dynamic parameter in your url (like post ID) use this really simple syntax: `{name:type}`.\
-All parameters are forced to have a **name**. Our recommendation is to use pascal case naming convention, but anyway we don't limit you as long as the parameter name matches `/[a-zA-Z0-9-_]+/`.\
-Each parameter must have also a **type** assigned to it. Type annotations are inspired by Typescript and are preceeded by a colon (`:`). Types are used for validation of the url that specific path refers to. This library provides a couple of most common types:
 
-- **bool** - for boolean values (accepts `true` and `false`),
-- **int** - for integer values, both negative and positive,
-- **uint** - for non-negative integers (`0` included),
-- **uuid** - for strings in UUID format,
-- **float** - for float values, both negative and positive,
-- **str** - for any non-empty string.
+All parameters are forced to have a **name**.\
+My recommendation is to use pascal case naming convention, but anyway you are not limited as long as the parameter name matches `/^[a-zA-Z0-9-_]+$/`.
 
-Apart from built-in types, you can define your own - see 'Examples' and 'API Reference' sections for more information on this.
+Each parameter must have also a **type** assigned to it.\
+Type annotations are inspired by Typescript and are preceded by a colon (`:`). Types are used for validation of the url that specific path refers to. This library provides a couple of most common types, but apart from them, you can define your own (see 'API Reference' sections for more information on this). Core types are:
+Type | Purpose | Correct values | Incorrect values
+--- | --- | --- | ---
+**bool** | boolean values | `true`, `false` | `yes`, `0`
+**int** | integer values, both negative and positive | `-100`, `0`, `123` | `-100.0`, `+123`
+**uint** | non-negative integers | `0`, `123` | `-100`, `123.0`
+**float** | float values, both negative and positive | `-100.23`, `-100`, `0.0`, `1`, `123.0` | `-0.0`
+**str** | any non-empty string | `abc`, `two words`, `kebab-case` | _an empty string_
+**uuid** | strings in uuid format | `a6715b7f-9f77-4166-bb55-f872735a22e6` | _anything that is not a uuid string_
 
 ## Typescript
 
@@ -183,5 +186,5 @@ Yes, it does.
 
 ## Live Demo
 
-You can see live demo here: https://codesandbox.io/s/pathy-live-demo-hzucl.\
-Don't hesitate to play with it.
+You can see [live demo here](https://codesandbox.io/s/pathy-live-demo-hzucl).\
+Don't hesitate to have some fun with it.
