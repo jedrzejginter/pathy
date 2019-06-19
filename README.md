@@ -180,3 +180,8 @@ Apart from built-in types, you can define your own - see 'Examples' and 'API Ref
 ## Typescript
 
 Yes, it does.
+
+## Live Demo
+
+You can see live demo here: https://codesandbox.io/s/pathy-live-demo-hzucl.\
+Don't hesitate to play with it.
