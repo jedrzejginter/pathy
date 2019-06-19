@@ -170,10 +170,10 @@ const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/pos
 To define a dynamic parameter in your url (like post ID) use this really simple syntax: `{name:type}`.
 
 All parameters are forced to have a **name**.\
-My recommendation is to use pascal case naming convention, but anyway you are not limited as long as the parameter name matches `/^[a-zA-Z0-9-_]+$/`.
+My recommendation is to use camel-case naming convention, but anyway you are not limited as long as the parameter name matches `/^[a-zA-Z0-9-_]+$/`.
 
 Each parameter must have also a **type** assigned to it.\
-Type annotations are inspired by Typescript and are preceded by a colon (`:`). Types are used for validation of the url that specific path refers to. This library provides a couple of most common types, but apart from them, you can define your own (see 'API Reference' sections for more information on this). Core types are:
+Type annotations are preceded by a colon (`:`) and are used for validation of the url that specific path refers to. This library provides a couple of most common types, but you can define your own (see 'API Reference' sections for more information on this). Core types are:
 
 | Type      | Purpose                                    | Correct values                          | Incorrect values                     |
 | --------- | ------------------------------------------ | --------------------------------------- | ------------------------------------ |
@@ -190,5 +190,5 @@ Yes, it does.
 
 ## Live Demo
 
-You can see [live demo here](https://codesandbox.io/s/pathy-live-demo-hzucl).\
+You can see the [live demo here](https://codesandbox.io/s/pathy-live-demo-hzucl).\
 Don't hesitate to have some fun with it.
