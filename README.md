@@ -40,7 +40,7 @@ import pathy from "pathy";
 /**
  * Options can be defined, but are not required.
  */
-const pathy = pathy({
+const instance = pathy({
   overwriteTypes: false,
   types: {
     myNumber: {
@@ -53,7 +53,7 @@ const pathy = pathy({
 /**
  * You can now use customized methods instead of core ones.
  */
-const { applyParams, createRoute, extractParams } = myPathy;
+const { applyParams, createRoute, extractParams } = instance;
 ```
 
 **What are the available options?**
