@@ -9,6 +9,7 @@ import {
   normalizePath,
   replaceParamTypeWithRegExp,
   validateParams,
+  validatePath,
 } from "./core";
 
 export function pathy(options: PathyOptions = {}) {
@@ -59,6 +60,12 @@ export function pathy(options: PathyOptions = {}) {
   }
 
   function createRoute(path: string, keepNames: boolean = true) {
+    /**
+     * Check, if specified path is correct.
+     * It will throw if something is not right.
+     */
+    validatePath(path, pathyTypes);
+
     let out = normalizePath(path);
 
     /**
@@ -81,6 +88,12 @@ export function pathy(options: PathyOptions = {}) {
   }
 
   function extractParams(path: string, url: string): object {
+    /**
+     * Check, if specified path is correct.
+     * It will throw if something is not right.
+     */
+    validatePath(path, pathyTypes);
+
     /**
      * Get all dynamic parameters definitions inside specified 'path'.
      * Example:

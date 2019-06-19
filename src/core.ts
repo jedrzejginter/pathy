@@ -65,6 +65,21 @@ export function getParamDefinitionStruct(paramDef: string): PathyParamStruct {
   return { name, type };
 }
 
+export function validatePath(path: string, types: PathyParamTypes): boolean {
+  const paramDefinitions: string[] = extractParamsDefinitions(path);
+  const paramStructs: PathyParamStruct[] = paramDefinitions.map(getParamDefinitionStruct);
+
+  for (const { type } of paramStructs) {
+    const typeDef = types[type];
+
+    if (!typeDef) {
+      throw new Error(`Unknown type '${type}'. Either a typo, or you forgot to add a custom type.`);
+    }
+  }
+
+  return true;
+}
+
 export function validateParams(path: string, params: object, types: PathyParamTypes): boolean {
   const paramDefinitions: string[] = extractParamsDefinitions(path);
   const paramStructs: PathyParamStruct[] = paramDefinitions.map(getParamDefinitionStruct);

@@ -97,9 +97,9 @@ describe("module entry", () => {
       );
     });
 
-    it("should leave unreplaced params definitions for unknown types", () => {
-      expect(mod.createRoute("/abc/{arg0:bool}/{arg1:incorrectType}")).toBe(
-        "/abc/:arg0(true|false)/{arg1:incorrectType}",
+    it("should throw for unknown types", () => {
+      expect(() => mod.createRoute("/abc/{arg0:bool}/{arg1:incorrectType}")).toThrowError(
+        "Unknown type 'incorrectType'. Either a typo, or you forgot to add a custom type.",
       );
     });
 
@@ -144,6 +144,14 @@ describe("module entry", () => {
         arg1: 1,
         arg2: "def",
       });
+    });
+
+    it("should throw for unknown types", () => {
+      expect(() =>
+        mod.extractParams("/abc/{arg0:bool}/{arg1:incorrectType}", "/abc/true/123"),
+      ).toThrowError(
+        "Unknown type 'incorrectType'. Either a typo, or you forgot to add a custom type.",
+      );
     });
   });
 });
