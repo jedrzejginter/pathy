@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf lib package pathy-*.tgz",
+    "clean": "rimraf lib package coverage pathy-*.tgz",
     "pre-publish": "yarn clean && yarn build && npm pack",
     "test": "jest"
   },
