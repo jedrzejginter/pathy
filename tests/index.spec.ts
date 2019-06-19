@@ -129,6 +129,7 @@ describe("module entry", () => {
       expect(mod.extractParams("/abc/{arg0:int}", "/abc/123")).toMatchObject({ arg0: 123 });
       expect(mod.extractParams("/abc/{arg0:bool}", "/abc/true")).toMatchObject({ arg0: true });
       expect(mod.extractParams("/abc/{arg0:str}", "/abc/345")).toMatchObject({ arg0: "345" });
+      expect(mod.extractParams("/abc/{arg0:float}", "/abc/123.45")).toMatchObject({ arg0: 123.45 });
     });
 
     it("should match multiple params", () => {

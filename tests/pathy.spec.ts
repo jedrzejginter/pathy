@@ -41,6 +41,12 @@ describe("pathy", () => {
       expect(() => pathy({})).not.toThrow();
     });
 
+    it("should wrap custom types regex with brackets", () => {
+      const instance = pathy({ types: { myType: /[a-f]+/ } });
+
+      expect(instance.createRoute("/abc/{arg0:myType}")).toBe("/abc/:arg0([a-f]+)");
+    });
+
     describe("overwriteTypes: false", () => {
       it("should not throw when called without custom types", () => {
         expect(() => pathy({ overwriteTypes: false })).not.toThrow();
