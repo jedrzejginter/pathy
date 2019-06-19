@@ -8,7 +8,7 @@ See 'API Reference' section for more information on how it works.
 
 ### Thanks to
 
-A big shout-out to [username] who gave back the package name to me ❤️
+A big shout-out to [Richard Hoffman](https://www.npmjs.com/~coverslide) who donated this package name ❤️
 
 ## Installation
 
