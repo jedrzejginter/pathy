@@ -171,14 +171,15 @@ My recommendation is to use pascal case naming convention, but anyway you are no
 
 Each parameter must have also a **type** assigned to it.\
 Type annotations are inspired by Typescript and are preceded by a colon (`:`). Types are used for validation of the url that specific path refers to. This library provides a couple of most common types, but apart from them, you can define your own (see 'API Reference' sections for more information on this). Core types are:
-Type | Purpose | Correct values | Incorrect values
---- | --- | --- | ---
-**bool** | boolean values | `true`, `false` | `yes`, `0`
-**int** | integer values, both negative and positive | `-100`, `0`, `123` | `-100.0`, `+123`
-**uint** | non-negative integers | `0`, `123` | `-100`, `123.0`
-**float** | float values, both negative and positive | `-100.23`, `-100`, `0.0`, `1`, `123.0` | `-0.0`
-**str** | any non-empty string | `abc`, `two words`, `kebab-case` | _an empty string_
-**uuid** | strings in uuid format | `a6715b7f-9f77-4166-bb55-f872735a22e6` | _anything that is not a uuid string_
+
+| Type      | Purpose                                    | Correct values                         | Incorrect values                     |
+| --------- | ------------------------------------------ | -------------------------------------- | ------------------------------------ |
+| **bool**  | boolean values                             | `true`, `false`                        | `yes`, `0`                           |
+| **int**   | integer values, both negative and positive | `-100`, `0`, `123`                     | `-100.0`, `+123`                     |
+| **uint**  | non-negative integers                      | `0`, `123`                             | `-100`, `123.0`                      |
+| **float** | float values, both negative and positive   | `-100.23`, `-100`, `0.0`, `1`, `123.0` | `-0.0`                               |
+| **str**   | any non-empty string                       | `abc`, `two words`, `kebab-case`       | _an empty string_                    |
+| **uuid**  | strings in uuid format                     | `a6715b7f-9f77-4166-bb55-f872735a22e6` | _anything that is not a uuid string_ |
 
 ## Typescript
 
