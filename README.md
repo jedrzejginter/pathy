@@ -25,11 +25,11 @@ npm install --save pathy@next
 
 ## API Reference
 
-### `pathy([options])`
+### `pathy([options: object])`
 
 **What is does?**
 
-_Creates a customized instance of library.\
+_Creates a customized instance of the library.\
 You can add your own types or even overwite built-in ones, if they don't feel like doing their job for you._
 
 **How to use it?**
@@ -134,8 +134,8 @@ const route = createRoute("/blog/posts/{postId:int}");
 // route: "/blog/posts/:postId(\\d+)"
 
 /**
- * You can tell this method to ignore parameter names in the output.
- * Handy if you want to use it to create a RegExp instance.
+ * You can make this method ignore parameter names in the output by providing 'false' as the second argument.
+ * Handy if you want to use 'createRoute' to make a RegExp instance.
  */
 const route = createRoute("/blog/posts/{postId:int}", false);
 // route: "/blog/posts/(\\d+)"
