@@ -6,55 +6,29 @@ export function unsignedZero(value: number): number {
 }
 
 /**
- * Strips decimal part of passed argument.
- * Keeps sign of the input value.
- */
-export function getInt(value: number): number {
-  const sgn: number = Math.sign(value);
-  const abs: number = Math.abs(value);
-
-  return Math.floor(abs) * sgn;
-}
-
-/**
- * Converts passed string to a signed number.
- * Returns NaN for arguments, that are not valid numbers or cannot be converted to a number.
- */
-export function toNumber(value: string | number): number {
-  if (value === "") {
-    return NaN;
-  }
-
-  const num: number = Number(value);
-
-  if (isNaN(num)) {
-    return NaN;
-  }
-
-  return num;
-}
-
-/**
- * Converts passed string to a signed float.
- * Returns NaN for arguments, that are not valid numbers or cannot be converted to a float.
+ * Converts arg0 to a signed float.
+ * Returns NaN for argument, that is not a valid number or cannot be converted to a float.
  */
 export function toFloat(value: string | number): number {
-  const num: number = toNumber(value);
-  return unsignedZero(num);
+  if (typeof value === "number") {
+    return unsignedZero(value);
+  }
+
+  // We don't have to use 'unsignedZero' here, because 'parseFloat' will take care of it.
+  return parseFloat(value);
 }
 
 /**
- * Converts passed string to a signed integer.
- * Returns NaN for arguments, that are not valid numbers or cannot be converted to integer.
+ * Converts arg0 to a signed integer.
+ * Returns NaN for argument, that is not a valid number or cannot be converted to an integer.
  */
 export function toInt(value: string | number): number {
-  const num: number = toNumber(value);
-  const int: number = getInt(num);
+  const int = parseInt(value.toString(), 10);
   return unsignedZero(int);
 }
 
 /**
- * Converts passed string to a boolean.
+ * Converts arg0 to a boolean.
  */
 export function toBoolean(value: string | boolean): boolean {
   if (typeof value === "boolean") {
