@@ -7,9 +7,9 @@
     "moduleResolution": "node",
     "outDir": "lib",
     "removeComments": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": true
   },
   "exclude": ["node_modules"],
-  "include": ["./src"]
+  "include": ["src"]
 }

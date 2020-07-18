@@ -8,7 +8,7 @@ import {
   normalizePath,
   replaceParamTypeWithRegExp,
   validatePath,
-} from "../core";
+} from "../src/core";
 
 describe("coreTypes", () => {
   it("should be an object", () => {
