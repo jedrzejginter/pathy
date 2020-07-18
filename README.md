@@ -3,8 +3,6 @@
 ![npm](https://img.shields.io/npm/v/pathy.svg?style=flat-square)
 ![npm (tag)](https://img.shields.io/npm/v/pathy/next.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/dm/pathy.svg?style=flat-square)
-![Travis (.com) branch](https://img.shields.io/travis/com/jedrzejginter/pathy/master.svg?style=flat-square)
-![David](https://img.shields.io/david/jedrzejginter/pathy.svg?style=flat-square)
 
 A small library that will help you with writing url paths and assigning a validation pattern to each of them.\
 See 'API Reference' section for more information on how it works.
@@ -25,9 +23,9 @@ npm install --save pathy@next
 
 ## API Reference
 
-### `pathy([options: object])`
+### `pathy([options: object]): object`
 
-**What is does?**
+**What does it do?**
 
 _Creates a customized instance of the library.\
 You can add your own types or even overwite built-in ones, if they don't feel like doing their job for you._
@@ -39,24 +37,21 @@ import pathy from "pathy";
 
 /**
  * Options can be defined, but are not required.
+ * You can now use customized methods instead of core ones.
  */
-const pathy = pathy({
+const { applyParams, createRoute, extractParams } = pathy({
   overwriteTypes: false,
   types: {
     myNumber: {
       parse: (value) => Number(value),
-      regex: /(\\d+)/,
+      regex: /(\d+)/,
     },
   },
 });
 
-/**
- * You can now use customized methods instead of core ones.
- */
-const { applyParams, createRoute, extractParams } = myPathy;
 ```
 
-**What are the available options?**
+**Available options**
 
 ```ts
 {
@@ -92,9 +87,9 @@ const { applyParams, createRoute, extractParams } = myPathy;
 }
 ```
 
-### `applyParams(path: string, params: object)`
+### `applyParams(path: string, params: object): string`
 
-**What it does?**
+**What does it do?**
 
 _Replaces parameter definitions in your specified path with real values.\
 Handy if creating a url that you want navigate a user to._
@@ -114,9 +109,9 @@ const url = applyParams("http://someapi.com/api/v1/posts/{postId:int}", { postId
 // url: "http://someapi.com/api/v1/posts/123"
 ```
 
-### `createRoute(path: string)`
+### `createRoute(path: string): string`
 
-**What it does?**
+**What does it do?**
 
 _Replaces parameter definitions in the path with regular expressions that validates a specific url.\
 This function is compatible with great `path-to-regexp` package._
@@ -142,9 +137,9 @@ const route = createRoute("/blog/posts/{postId:int}", false);
 // Now you can do: new RegExp(route)
 ```
 
-### `extractParams(path: string, url: string)`
+### `extractParams(path: string, url: string): object`
 
-**What it does?**
+**What does it do?**
 
 _Well, get parameter values from specific url for given path.\
 If a parameter can be transformed to something else than string (like `int` does), it will be._

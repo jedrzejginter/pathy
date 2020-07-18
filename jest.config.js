@@ -1,10 +1,10 @@
 module.exports = {
-  globals: {
-    "ts-jest": {
-      diagnostics: false,
-    },
+  transform: {
+    "^.+\\.[jt]sx?$": "ts-jest",
   },
+  testEnvironment: "node",
   collectCoverage: true,
+  collectCoverageFrom: ["./src/**/*"],
   coverageThreshold: {
     global: {
       branches: 95,
@@ -13,10 +13,4 @@ module.exports = {
       statements: 95,
     },
   },
-  roots: ["<rootDir>"],
-  transform: {
-    "^.+\\.tsx?$": "ts-jest",
-  },
-  testRegex: "/tests/.*\\.spec\\.ts$",
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 };
