@@ -13,7 +13,7 @@ export const coreTypes: PathyParamTypes = {
     parse: (value: string): number => parseInt(value, 10),
     regex: /(0|-?[1-9]\d*)/,
   },
-  str: /([^\/]+)/,
+  str: /([^/]+)/,
   uint: /(0|[1-9]\d*)/,
   uuid: /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/,
 };
@@ -29,8 +29,8 @@ export function normalizePath(path: string): string {
   }
 
   return transformedPath
-    .replace(/\:\/{3,}/, "://")
-    .replace(/([^\:])\/{2,}/g, "$1/")
+    .replace(/:\/{3,}/, "://")
+    .replace(/([^:])\/{2,}/g, "$1/")
     .replace(/^\/{2,}/, "/")
     .replace(/\/\s*$/, "/");
 }
@@ -46,7 +46,7 @@ export function replaceParamTypeWithRegExp(
 }
 
 export function createParamDefinitionRegExp(type: string): RegExp {
-  const regExpSource = `\\{([a-zA-Z\\d_-]+)\\:${type}\\}`;
+  const regExpSource = `\\{([a-zA-Z\\d_-]+):${type}\\}`;
   return new RegExp(regExpSource, "g");
 }
 
@@ -55,14 +55,25 @@ export function extractRegExpForParamType(regExpOrObj: RegExp | PathyParamType):
 }
 
 export function getParamDefinitionStruct(paramDef: string): PathyParamStruct {
-  const paramDefinitionMatch = paramDef.match(/\{([a-zA-Z\d_-]+)\:([a-zA-Z\d_-]+)\}/);
+  const paramDefinitionMatch = paramDef.match(/\{([a-zA-Z\d_-]+):([a-zA-Z\d_-]+)\}/);
 
   if (paramDefinitionMatch === null) {
     throw new Error("Couldn't parse parameter definition.");
   }
 
-  const [_, name, type] = paramDefinitionMatch;
+  const [, name, type] = paramDefinitionMatch;
   return { name, type };
+}
+
+export function extractParamsDefinitions(path: string): string[] {
+  /**
+   * The global flag is very important here.
+   * We used 'g' flag in RegExp, so we MUST NOT slice returned array, because what we get here
+   * is the actual array of all matches only.
+   * It would not be the case, if global flag is not set.
+   */
+  const matchedParamDefinitions = path.match(/(\{[a-zA-Z\d_-]+:[a-zA-Z\d_-]+\})/g);
+  return matchedParamDefinitions || [];
 }
 
 export function validatePath(path: string, types: PathyParamTypes): boolean {
@@ -80,7 +91,11 @@ export function validatePath(path: string, types: PathyParamTypes): boolean {
   return true;
 }
 
-export function validateParams(path: string, params: object, types: PathyParamTypes): boolean {
+export function validateParams(
+  path: string,
+  params: Record<string, any>,
+  types: PathyParamTypes,
+): boolean {
   const paramDefinitions: string[] = extractParamsDefinitions(path);
   const paramStructs: PathyParamStruct[] = paramDefinitions.map(getParamDefinitionStruct);
 
@@ -103,25 +118,12 @@ export function validateParams(path: string, params: object, types: PathyParamTy
 
     if (!regExpMoreStrict.test(paramValueAsStr)) {
       throw new Error(
-        `Expected parameter value for '${name}' to match '${
-          regExpMoreStrict.source
-        }' (got: '${paramValueAsStr}').`,
+        `Expected parameter value for '${name}' to match '${regExpMoreStrict.source}' (got: '${paramValueAsStr}').`,
       );
     }
   }
 
   return true;
-}
-
-export function extractParamsDefinitions(path: string): string[] {
-  /**
-   * The global flag is very important here.
-   * We used 'g' flag in RegExp, so we MUST NOT slice returned array, because what we get here
-   * is the actual array of all matches only.
-   * It would not be the case, if global flag is not set.
-   */
-  const matchedParamDefinitions = path.match(/(\{[a-zA-Z\d_-]+\:[a-zA-Z\d_-]+\})/g);
-  return matchedParamDefinitions || [];
 }
 
 export function extractValuesOfUrlParams(url: string, route: string): string[] {

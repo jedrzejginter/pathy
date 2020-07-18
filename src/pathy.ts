@@ -1,4 +1,3 @@
-import { PathyOptions, PathyParamTypes } from "./types";
 import {
   coreTypes,
   createParamDefinitionRegExp,
@@ -11,39 +10,42 @@ import {
   validateParams,
   validatePath,
 } from "./core";
+import { PathyOptions, PathyParamTypes } from "./types";
 
 export function pathy(options: PathyOptions = {}) {
   const customTypes = options.types || {};
   const overwriteTypes = options.overwriteTypes || false;
 
-  const processedCustomTypes = {};
+  const processedCustomTypes: Record<string, any> = {};
 
   for (const customTypeName in customTypes) {
-    if (!overwriteTypes && coreTypes.hasOwnProperty(customTypeName)) {
-      throw new Error(`You have to set 'overwriteTypes: true' to overwrite built-in types`);
+    if (Object.prototype.hasOwnProperty.call(customTypes, customTypeName)) {
+      if (!overwriteTypes && customTypeName in coreTypes) {
+        throw new Error(`You have to set 'overwriteTypes: true' to overwrite built-in types`);
+      }
+
+      const customType = customTypes[customTypeName];
+      const customTypeRegexp: RegExp = extractRegExpForParamType(customType);
+
+      let regexpSource = customTypeRegexp.source
+        .replace(/^\s+/, "")
+        .replace(/\s+$/, "")
+        .replace(/^\^+/, "")
+        .replace(/\$+$/, "");
+
+      if (!regexpSource.match(/^\(.+\)$/)) {
+        regexpSource = `(${regexpSource})`;
+      }
+
+      processedCustomTypes[customTypeName] = new RegExp(regexpSource);
     }
-
-    const customType = customTypes[customTypeName];
-    const customTypeRegexp: RegExp = extractRegExpForParamType(customType);
-
-    let regexpSource = customTypeRegexp.source
-      .replace(/^\s+/, "")
-      .replace(/\s+$/, "")
-      .replace(/^\^+/, "")
-      .replace(/\$+$/, "");
-
-    if (!regexpSource.match(/^\(.+\)$/)) {
-      regexpSource = `(${regexpSource})`;
-    }
-
-    processedCustomTypes[customTypeName] = new RegExp(regexpSource);
   }
 
   const pathyTypes: PathyParamTypes = overwriteTypes
     ? { ...coreTypes, ...processedCustomTypes }
     : { ...processedCustomTypes, ...coreTypes };
 
-  function applyParams(path: string, params: object): string {
+  function applyParams(path: string, params: Record<string, any>): string {
     const paramNames = Object.keys(params);
     let pathWithParamsApplied = path;
 
@@ -77,17 +79,19 @@ export function pathy(options: PathyOptions = {}) {
       return out;
     }
 
-    for (const type in pathyTypes) {
-      const matchRegExp: RegExp = createParamDefinitionRegExp(type);
-      const replaceRegExp: RegExp = extractRegExpForParamType(pathyTypes[type]);
+    for (const typeKey in pathyTypes) {
+      if (Object.prototype.hasOwnProperty.call(pathyTypes, typeKey)) {
+        const matchRegExp: RegExp = createParamDefinitionRegExp(typeKey);
+        const replaceRegExp: RegExp = extractRegExpForParamType(pathyTypes[typeKey]);
 
-      out = replaceParamTypeWithRegExp(out, matchRegExp, replaceRegExp, keepNames);
+        out = replaceParamTypeWithRegExp(out, matchRegExp, replaceRegExp, keepNames);
+      }
     }
 
     return out;
   }
 
-  function extractParams(path: string, url: string): object {
+  function extractParams(path: string, url: string): Record<string, any> {
     /**
      * Check, if specified path is correct.
      * It will throw if something is not right.
@@ -122,7 +126,7 @@ export function pathy(options: PathyOptions = {}) {
       return {};
     }
 
-    const params = {};
+    const params: Record<string, any> = {};
 
     matchedUrlParameterVals.forEach((match: string, index: number) => {
       const { name, type } = dynamicParameterStructs[index];
