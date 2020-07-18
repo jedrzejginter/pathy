@@ -1,5 +1,8 @@
 import { PathyParamStruct, PathyParamType, PathyParamTypes } from "./types";
 
+// Node (express) issue:
+// '\d*' is not what we expect to be and it's transformed by express to '\d(.*)'
+// So instead we use '\d{0,}' which is the same.
 export const coreTypes: PathyParamTypes = {
   bool: {
     parse: (value: string): boolean => value === "true",
@@ -7,14 +10,14 @@ export const coreTypes: PathyParamTypes = {
   },
   float: {
     parse: (value: string): number => parseFloat(value),
-    regex: /(0\.\d+|-0\.\d*[1-9]\d*|-?[1-9]\d*\.\d+)/,
+    regex: /(0\.\d+|-0\.\d{0,}[1-9]\d{0,}|-?[1-9]\d{0,}\.\d+)/,
   },
   int: {
     parse: (value: string): number => parseInt(value, 10),
-    regex: /(0|-?[1-9]\d*)/,
+    regex: /(0|-?[1-9]\d{0,})/,
   },
   str: /([^/]+)/,
-  uint: /(0|[1-9]\d*)/,
+  uint: /(0|[1-9]\d{0,})/,
   uuid: /([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})/,
 };
 
