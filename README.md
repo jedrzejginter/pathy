@@ -1,7 +1,6 @@
 # Pathy
 
 ![npm](https://img.shields.io/npm/v/pathy.svg?style=flat-square)
-![npm (tag)](https://img.shields.io/npm/v/pathy/next.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/dm/pathy.svg?style=flat-square)
 
 A small library that will help you with writing url paths and assigning a validation pattern to each of them.\
@@ -15,10 +14,10 @@ A big shout-out to [Richard Hoffman](https://www.npmjs.com/~coverslide) who dona
 
 ```bash
 # If you are using Yarn:
-yarn add pathy@next
+yarn add pathy
 
 # If you are using npm:
-npm install --save pathy@next
+npm install --save pathy
 ```
 
 ## API Reference
