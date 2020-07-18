@@ -1,6 +1,6 @@
 {
   "name": "pathy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Assigning and extracting params from urls",
   "keywords": [
     "path",
