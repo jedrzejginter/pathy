@@ -1,4 +1,4 @@
-import { pathy } from "../pathy";
+import { pathy } from "../src/pathy";
 
 describe("pathy", () => {
   it("should be a function", () => {

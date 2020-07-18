@@ -1,4 +1,4 @@
-import pathy, { applyParams, createRoute, extractParams } from "..";
+import pathy, { applyParams, createRoute, extractParams } from "../src/index";
 
 describe("module entry", () => {
   describe("default export", () => {
