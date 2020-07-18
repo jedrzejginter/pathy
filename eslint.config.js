@@ -53,6 +53,14 @@ module.exports = {
       { usePrettierrc: false },
     ],
     "spaced-comment": [ERROR, "always", { markers: ["/"] }],
+    "sort-imports": [
+      ERROR,
+      {
+        ignoreCase: true,
+        ignoreMemberSort: false,
+        memberSyntaxSortOrder: ["none", "all", "multiple", "single"],
+      },
+    ],
     "symbol-description": OFF,
   },
 };

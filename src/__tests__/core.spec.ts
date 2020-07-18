@@ -1,12 +1,12 @@
 import {
   coreTypes,
-  extractRegExpForParamType,
-  replaceParamTypeWithRegExp,
   createParamDefinitionRegExp,
   extractParamsDefinitions,
+  extractRegExpForParamType,
   extractValuesOfUrlParams,
   getParamDefinitionStruct,
   normalizePath,
+  replaceParamTypeWithRegExp,
   validatePath,
 } from "../core";
 
