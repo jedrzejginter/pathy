@@ -1,4 +1,4 @@
-# Pathy
+# pathy
 
 ![npm](https://img.shields.io/npm/v/pathy.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/dm/pathy.svg?style=flat-square)
@@ -7,15 +7,13 @@ A small library that will help you with interpolation of dynamic parameters in U
 
 ## Installation
 
-```bash
-# If you are using Yarn:
+```console
 yarn add pathy
-
-# If you are using npm:
+# or
 npm install --save pathy
 ```
 
-## API Reference
+## API reference & usage
 
 ### `pathy([options: object]): object`
 
@@ -38,9 +36,7 @@ And with custom types definitions (validation and casting):
 ```ts
 import pathy from "pathy";
 
-/**
- * You can now use customized methods instead of core ones.
- */
+// Add some custom type validation and transformation.
 const { applyParams, extractParams } = pathy({
   types: {
     customId: {
@@ -55,7 +51,6 @@ const url = applyParams("/blog/posts/{id:customId}", { id: 123 });
 
 const params = extractParams("/blog/posts/{id:customId}", "/blog/posts/123");
 // params: { id: "id-123" }
-
 ```
 
 **Available options**
@@ -96,7 +91,7 @@ const params = extractParams("/blog/posts/{id:customId}", "/blog/posts/123");
 
 ### `applyParams(path: string, params: object): string`
 
-_Replace parameters with values._
+Replace parameters with values.
 
 ```ts
 import { applyParams } from "pathy";
@@ -104,40 +99,32 @@ import { applyParams } from "pathy";
 const url = applyParams("/blog/posts/{postId:int}", { postId: 123 });
 // url: "/blog/posts/123"
 
-/**
- * Works also for external urls.
- */
 const url = applyParams("http://someapi.com/api/v1/posts/{postId:int}", { postId: 123 });
 // url: "http://someapi.com/api/v1/posts/123"
 ```
 
 ### `createRoute(path: string): string`
 
-_Replace parameters with regular expressions and creates a pattern you can use for matching routes, for example in [`express`](https://npmjs.com/package/express) (compatible with [`path-to-regexp`](https://npmjs.com/package/path-to-regexp))._
-
-**How to use it?**
+Replace parameters with regular expressions and create a pattern you can use for matching routes, for example in [`express`](https://npmjs.com/package/express) (compatible with [`path-to-regexp`](https://npmjs.com/package/path-to-regexp)).
 
 ```ts
 import { createRoute } from "pathy";
 
-/**
- * For purpose of this example, let's agree that regular expression for integer is just (\d+).
- * The built-in regexp for 'int' is way more strict.
- */
+// For purpose of this example, let's agree that regular expression for integer is just (\d+).
+// The built-in regexp for 'int' is way more strict.
 const route = createRoute("/blog/posts/{postId:int}");
 // route: "/blog/posts/:postId(\\d+)"
 
-/**
- * You can make this method ignore names of the parameters in the output by providing 'false' as the second argument.
- * Useful if you want to use 'createRoute' to make a RegExp instance: `new RegExp(createRoute(...))`
- */
+// You can make this method ignore names of the parameters in the output by providing 'false'
+// as the second argument. Useful if you want to use 'createRoute' to make a RegExp instance:
+// `new RegExp(createRoute(...))`
 const route = createRoute("/blog/posts/{postId:int}", false);
 // route: "/blog/posts/(\\d+)"
 ```
 
 ### `extractParams(path: string, url: string): object`
 
-_Extract values for specified parameters. Each value can be mapped to some other type or value via `parse` method, so for example parameters annotated as `int` are transformed to number type._
+Extract values for specified parameters. Each value can be mapped to some other type or value via `parse` method, so for example parameters annotated as `int` are transformed to number type.
 
 ```ts
 import { extractParams } from "pathy";
@@ -146,14 +133,12 @@ const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/pos
 // params: { resource: "posts", postId: 123 }
 // Notice, that postId is converted to a number.
 
-/**
- * Params object will be empty, if at least one parameter cannot be matched.
- */
+// Params object will be empty, if at least one parameter cannot be matched.
 const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/posts/not-an-integer");
 // params: {}
 ```
 
-## Parameters Syntax
+## Syntax
 
 For defining dynamic parameter, the **`{name:type}`** syntax is used.
 
@@ -174,10 +159,12 @@ This library provides a couple of most common types, but you can define your own
 
 Out-of-the-box Typescript support.
 
-## Live Demo
+## Live demo
 
 You can see the [live demo here](https://codesandbox.io/s/pathy-live-demo-hzucl). Don't hesitate to have some fun with it.
 
-### Thanks to
+---
+
+### Thank you!
 
 A big shout-out to [Richard Hoffman](https://www.npmjs.com/~coverslide) for letting me owning this package name ❤️
