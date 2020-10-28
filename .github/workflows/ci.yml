@@ -1,23 +1,22 @@
-name: CI
+name: ci
+
 on:
   push:
     branches:
       - '**'
     tags-ignore:
       - '**'
+
 jobs:
   lint-and-build:
     name: Lint and build
     runs-on: ubuntu-latest
-    env:
-      API_URL: http://localhost:3000
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '13.11.0'
+        node-version: 12.18.4
 
     - name: Get yarn cache dir
       id: yarn-cache-output
@@ -28,17 +27,19 @@ jobs:
       id: yarn-cache
       with:
         path: ${{ steps.yarn-cache-output.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
+
     - name: Restore node_modules cache
       uses: actions/cache@v1
       id: node-modules-cache
       with:
         path: ./node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-node-modules-
+
     - run: yarn --frozen-lockfile
     - run: yarn typecheck
     - run: yarn test
