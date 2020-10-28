@@ -1,30 +1,31 @@
 {
   "name": "pathy",
-  "version": "1.0.1",
-  "description": "Assigning and extracting params from urls",
-  "keywords": [
-    "path",
-    "validation",
-    "routing"
-  ],
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "repository": "git@github.com:jedrzejginter/pathy.git",
-  "bugs": {
-    "url": "https://github.com/jedrzejginter/pathy/issues"
-  },
+  "version": "1.1.0",
+  "license": "MIT",
+  "description": "Interpolation of dynamic parameters in URLs or files paths as well as extracting them. Support for types validation and values casting.",
   "author": {
     "name": "Jedrzej Ginter",
     "email": "dzeejj@gmail.com",
     "url": "https://github.com/jedrzejginter"
   },
-  "license": "MIT",
+  "keywords": [
+    "path",
+    "urls",
+    "interpolation",
+    "routing"
+  ],
+  "repository": "git@github.com:jedrzejginter/pathy.git",
+  "bugs": {
+    "url": "https://github.com/jedrzejginter/pathy/issues"
+  },
   "engines": {
-    "node": ">=13"
+    "node": ">=12"
   },
   "files": [
     "lib"
   ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib package coverage pathy-*.tgz",

@@ -3,12 +3,7 @@
 ![npm](https://img.shields.io/npm/v/pathy.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/dm/pathy.svg?style=flat-square)
 
-A small library that will help you with writing url paths and assigning a validation pattern to each of them.\
-See 'API Reference' section for more information on how it works.
-
-### Thanks to
-
-A big shout-out to [Richard Hoffman](https://www.npmjs.com/~coverslide) who donated this package name ❤️
+A small library that will help you with interpolation of dynamic parameters in URLs or files paths as well as extracting them. Supports types validation and values casting.
 
 ## Installation
 
@@ -32,21 +27,42 @@ You can add your own types or even overwite built-in ones, if they don't feel li
 **How to use it?**
 
 ```ts
+import { applyParams, createRoute, extractParams } from "pathy";
+
+const url = applyParams("/blog/posts/{postId:int}", { postId: 123 });
+// url: "/blog/posts/123"
+
+const route = createRoute("/blog/posts/{postId:int}");
+// route: "/blog/posts/:postId(\\d+)"
+
+const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/posts/123");
+// params: { resource: "posts", postId: 123 }
+
+```
+
+And with customization:
+
+```ts
 import pathy from "pathy";
 
 /**
- * Options can be defined, but are not required.
  * You can now use customized methods instead of core ones.
  */
-const { applyParams, createRoute, extractParams } = pathy({
+const { applyParams, extractParams } = pathy({
   overwriteTypes: false,
   types: {
-    myNumber: {
-      parse: (value) => Number(value),
+    customId: {
+      parse: (value) => "id-" + value,
       regex: /(\d+)/,
     },
   },
 });
+
+const url = applyParams("/blog/posts/{id:customId}", { id: 123 });
+// url: "/blog/posts/123"
+
+const params = extractParams("/blog/posts/{id:customId}", "/blog/posts/123");
+// params: { id: "id-123" }
 
 ```
 
@@ -188,3 +204,7 @@ Yes, it does.
 
 You can see the [live demo here](https://codesandbox.io/s/pathy-live-demo-hzucl).\
 Don't hesitate to have some fun with it.
+
+### Thanks to
+
+A big shout-out to [Richard Hoffman](https://www.npmjs.com/~coverslide) who donated this package name ❤️
