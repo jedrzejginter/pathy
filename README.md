@@ -1,53 +1,56 @@
-# Pathy
+# pathy
 
 ![npm](https://img.shields.io/npm/v/pathy.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/dm/pathy.svg?style=flat-square)
 
-A small library that will help you with writing url paths and assigning a validation pattern to each of them.\
-See 'API Reference' section for more information on how it works.
-
-### Thanks to
-
-A big shout-out to [Richard Hoffman](https://www.npmjs.com/~coverslide) who donated this package name ❤️
+A small library that will help you with interpolation of dynamic parameters in URLs or files paths as well as extracting them. Supports types validation and values casting.
 
 ## Installation
 
-```bash
-# If you are using Yarn:
+```console
 yarn add pathy
-
-# If you are using npm:
+# or
 npm install --save pathy
 ```
 
-## API Reference
+## API reference & usage
 
 ### `pathy([options: object]): object`
 
-**What does it do?**
+```ts
+import { applyParams, createRoute, extractParams } from "pathy";
 
-_Creates a customized instance of the library.\
-You can add your own types or even overwite built-in ones, if they don't feel like doing their job for you._
+const url = applyParams("/blog/posts/{postId:int}", { postId: 123 });
+// url: "/blog/posts/123"
 
-**How to use it?**
+const route = createRoute("/blog/posts/{postId:int}");
+// route: "/blog/posts/:postId(\\d+)"
+
+const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/posts/123");
+// params: { resource: "posts", postId: 123 }
+
+```
+
+And with custom types definitions (validation and casting):
 
 ```ts
 import pathy from "pathy";
 
-/**
- * Options can be defined, but are not required.
- * You can now use customized methods instead of core ones.
- */
-const { applyParams, createRoute, extractParams } = pathy({
-  overwriteTypes: false,
+// Add some custom type validation and transformation.
+const { applyParams, extractParams } = pathy({
   types: {
-    myNumber: {
-      parse: (value) => Number(value),
+    customId: {
+      parse: (value) => "id-" + value,
       regex: /(\d+)/,
     },
   },
 });
 
+const url = applyParams("/blog/posts/{id:customId}", { id: 123 });
+// url: "/blog/posts/123"
+
+const params = extractParams("/blog/posts/{id:customId}", "/blog/posts/123");
+// params: { id: "id-123" }
 ```
 
 **Available options**
@@ -88,12 +91,7 @@ const { applyParams, createRoute, extractParams } = pathy({
 
 ### `applyParams(path: string, params: object): string`
 
-**What does it do?**
-
-_Replaces parameter definitions in your specified path with real values.\
-Handy if creating a url that you want navigate a user to._
-
-**How to use it?**
+Replace parameters with values.
 
 ```ts
 import { applyParams } from "pathy";
@@ -101,49 +99,32 @@ import { applyParams } from "pathy";
 const url = applyParams("/blog/posts/{postId:int}", { postId: 123 });
 // url: "/blog/posts/123"
 
-/**
- * Works also for external urls.
- */
 const url = applyParams("http://someapi.com/api/v1/posts/{postId:int}", { postId: 123 });
 // url: "http://someapi.com/api/v1/posts/123"
 ```
 
 ### `createRoute(path: string): string`
 
-**What does it do?**
-
-_Replaces parameter definitions in the path with regular expressions that validates a specific url.\
-This function is compatible with great `path-to-regexp` package._
-
-**How to use it?**
+Replace parameters with regular expressions and create a pattern you can use for matching routes, for example in [`express`](https://npmjs.com/package/express) (compatible with [`path-to-regexp`](https://npmjs.com/package/path-to-regexp)).
 
 ```ts
 import { createRoute } from "pathy";
 
-/**
- * For purpose of this example, let's agree that regular expression for integer is just (\d+).
- * The built-in validator for 'int' is way more strict though.
- */
+// For purpose of this example, let's agree that regular expression for integer is just (\d+).
+// The built-in regexp for 'int' is way more strict.
 const route = createRoute("/blog/posts/{postId:int}");
 // route: "/blog/posts/:postId(\\d+)"
 
-/**
- * You can make this method ignore parameter names in the output by providing 'false' as the second argument.
- * Handy if you want to use 'createRoute' to make a RegExp instance.
- */
+// You can make this method ignore names of the parameters in the output by providing 'false'
+// as the second argument. Useful if you want to use 'createRoute' to make a RegExp instance:
+// `new RegExp(createRoute(...))`
 const route = createRoute("/blog/posts/{postId:int}", false);
 // route: "/blog/posts/(\\d+)"
-// Now you can do: new RegExp(route)
 ```
 
 ### `extractParams(path: string, url: string): object`
 
-**What does it do?**
-
-_Well, get parameter values from specific url for given path.\
-If a parameter can be transformed to something else than string (like `int` does), it will be._
-
-**How to use it?**
+Extract values for specified parameters. Each value can be mapped to some other type or value via `parse` method, so for example parameters annotated as `int` are transformed to number type.
 
 ```ts
 import { extractParams } from "pathy";
@@ -152,39 +133,38 @@ const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/pos
 // params: { resource: "posts", postId: 123 }
 // Notice, that postId is converted to a number.
 
-/**
- * Params object will be empty, if at least one parameter cannot be matched.
- */
+// Params object will be empty, if at least one parameter cannot be matched.
 const params = extractParams("/api/v1/{resource:str}/{postId:int}", "/api/v1/posts/not-an-integer");
 // params: {}
 ```
 
-## Parameters Syntax
+## Syntax
 
-To define a dynamic parameter in your url (like post ID) use this really simple syntax: `{name:type}`.
+For defining dynamic parameter, the **`{name:type}`** syntax is used.
 
 All parameters are forced to have a **name**.\
 My recommendation is to use camel-case naming convention, but anyway you are not limited as long as the parameter name matches `/^[a-zA-Z0-9-_]+$/`.
 
-Each parameter must have also a **type** assigned to it.\
-Type annotations are preceded by a colon (`:`) and are used for validation of the url that specific path refers to. This library provides a couple of most common types, but you can define your own (see 'API Reference' section for more information on this topic). The core types are:
+Each parameter must have also a **type** assigned to it. Type annotations are preceded by a colon (`:`) and are used for validating the value of the parameter.\
+This library provides a couple of most common types, but you can define your own. The core types are:
 
-| Type      | Purpose                                    | Correct values                          | Incorrect values                     |
-| --------- | ------------------------------------------ | --------------------------------------- | ------------------------------------ |
-| **bool**  | boolean values                             | `true`, `false`                         | `yes`, `0`                           |
-| **int**   | integer values, both negative and positive | `-100`, `0`, `123`                      | `-100.0`, `+123`                     |
-| **uint**  | non-negative integers                      | `0`, `123`                              | `-100`, `123.0`                      |
-| **float** | float values, both negative and positive   | `-100.23`, `-100`, `0.0`, `1.0` `123.0` | `-0.0`, `1`, `123`                   |
-| **str**   | any non-empty string                       | `abc`, `two words`, `kebab-case`        | _an empty string_                    |
-| **uuid**  | strings in uuid format                     | `a6715b7f-9f77-4166-bb55-f872735a22e6`  | _anything that is not a uuid string_ |
-
-There is a high possibility that in the future this list will be extended with some additional types that the community will ask for.
+- **bool** (boolean values): `true`, `false`
+- **int** (integer values): `-100`, `0`, `123`
+- **uint** (non-negative integers): `0`, `123`
+- **float** (numbers with decimals): `-100.23`, `-100`, `0.0`, `1.0`, `123.0`
+- **uuid** (strings in uuid format): `a6715b7f-9f77-4166-bb55-f872735a22e6`
+- **str** (everything else): `abc`, `two words`, `kebab-case`
 
 ## Typescript
 
-Yes, it does.
+Out-of-the-box Typescript support.
 
-## Live Demo
+## Live demo
 
-You can see the [live demo here](https://codesandbox.io/s/pathy-live-demo-hzucl).\
-Don't hesitate to have some fun with it.
+You can see the [live demo here](https://codesandbox.io/s/pathy-live-demo-hzucl). Don't hesitate to have some fun with it.
+
+---
+
+### Thank you!
+
+A big shout-out to [Richard Hoffman](https://www.npmjs.com/~coverslide) for letting me owning this package name ❤️
